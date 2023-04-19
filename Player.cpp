@@ -21,6 +21,9 @@ Player::~Player() {
 /// <param name="textureHandle">テクスチャハンドル</param>
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 
+	// シングルトンインスタンスを取得
+	input_ = Input::GetInstance();
+
 	// NULLポインタチェック
 	assert(model);
 
@@ -32,7 +35,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// ワールド座標の初期化
 	worldTransform_.Initialize();
-	
+
 }
 
 /// <summary>
@@ -43,6 +46,30 @@ void Player::Update() {
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
 
+	/// プレイヤーの移動処理
+
+	// 移動ベクトル
+	Vector3 move = {0, 0, 0};
+
+	// 移動スピード
+	const float kSpeed = 0.2f;
+
+	// 押した方向で移動ベクトルを変更する(左右)
+	if (input_->PushKey(DIK_LEFT)) {
+		move.x -= kSpeed;
+	} else if (input_->PushKey(DIK_RIGHT)) {
+		move.x += kSpeed;
+	}
+
+	// 押した方向で移動ベクトルを変更する(上下)
+	if (input_->PushKey(DIK_UP)) {
+		move.y -= kSpeed;
+	} else if (input_->PushKey(DIK_DOWN)) {
+		move.y += kSpeed;
+	}
+
+	// 座標移動(ベクトルの加算)
+	Add(worldTransform_.translation_, move);
 }
 
 /// <summary>

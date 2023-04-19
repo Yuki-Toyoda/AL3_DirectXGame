@@ -2,6 +2,8 @@
 #include <cassert>
 #include "Model.h"
 #include "WorldTransform.h"
+#include "Input.h"
+
 /// <summary>
 /// プレイヤークラス
 /// </summary>
@@ -28,6 +30,9 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 private:
+
+	// キーボード入力
+	Input* input_ = nullptr;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
