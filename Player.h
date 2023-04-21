@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Input.h"
+#include "ImGuiManager.h"
 
 /// <summary>
 /// プレイヤークラス
@@ -30,6 +31,8 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
+	Vector3 GetPlayerTranslation() { return worldTransform_.translation_; } 
+
 private:
 
 	// キーボード入力
@@ -46,5 +49,12 @@ private:
 
 	// 移動ベクトル
 	Vector3 move;
+
+	// 移動限界
+	const float kMoveLimitX = 34.0f;
+	const float kMoveLimitY = 19.0f;
+
+	// デバッグ用
+	float translation[3] = {0.0f, 0.0f, 0.0f};
 
 };

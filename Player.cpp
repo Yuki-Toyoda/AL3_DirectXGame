@@ -4,7 +4,7 @@
 /// コンストラクタ
 /// </summary>
 Player::Player() {
-
+	
 }
 
 /// <summary>
@@ -36,6 +36,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// ワールド座標の初期化
 	worldTransform_.Initialize();
 
+	// 移動ベクトルの初期化
 	move = {0.0f, 0.0f, 0.0f};
 
 }
@@ -72,12 +73,29 @@ void Player::Update() {
 
 	// 座標移動(ベクトルの加算)
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, move);
+	
+	/// 移動制限処理
+	// 範囲を超えない処理
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	worldTransform_.matWorld_ = MyMath::Vector3MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+
+	// デバック用の値を変える
+	translation[0] = worldTransform_.translation_.x;
+	translation[1] = worldTransform_.translation_.y;
+	translation[2] = worldTransform_.translation_.z;
+
+	// デバッグ描画
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("Player", translation, -100.0f, 100.0f);
+	ImGui::End();
 
 }
 
@@ -88,4 +106,5 @@ void Player::Update() {
 void Player::Draw(ViewProjection& viewProjection) {
 	// 3Dモデル描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
 }
