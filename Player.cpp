@@ -36,6 +36,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// ワールド座標の初期化
 	worldTransform_.Initialize();
 
+	move = {0.0f, 0.0f, 0.0f};
+
 }
 
 /// <summary>
@@ -49,7 +51,7 @@ void Player::Update() {
 	/// プレイヤーの移動処理
 
 	// 移動ベクトル
-	Vector3 move = {0, 0, 0};
+	move = {0.0f, 0.0f, 0.0f};
 
 	// 移動スピード
 	const float kSpeed = 0.2f;
@@ -63,13 +65,20 @@ void Player::Update() {
 
 	// 押した方向で移動ベクトルを変更する(上下)
 	if (input_->PushKey(DIK_UP)) {
-		move.y -= kSpeed;
-	} else if (input_->PushKey(DIK_DOWN)) {
 		move.y += kSpeed;
+	} else if (input_->PushKey(DIK_DOWN)) {
+		move.y -= kSpeed;
 	}
 
 	// 座標移動(ベクトルの加算)
-	Add(worldTransform_.translation_, move);
+	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, move);
+
+	worldTransform_.matWorld_ = MyMath::Vector3MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+
+	// 行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
+
 }
 
 /// <summary>

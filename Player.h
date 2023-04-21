@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <cassert>
+#include "MyMath.h"
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Input.h"
@@ -43,5 +44,7 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 
+	// 移動ベクトル
+	Vector3 move;
 
 };
