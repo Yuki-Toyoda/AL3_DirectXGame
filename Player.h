@@ -54,6 +54,9 @@ private:
 	const float kMoveLimitX = 34.0f;
 	const float kMoveLimitY = 19.0f;
 
+	// 旋回速さ
+	const float kRotSpeed = 0.02f;
+
 	// デバッグ用
 	float translation[3] = {0.0f, 0.0f, 0.0f};
 

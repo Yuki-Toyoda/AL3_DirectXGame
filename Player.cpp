@@ -71,6 +71,14 @@ void Player::Update() {
 		move.y -= kSpeed;
 	}
 
+	// プレイヤーの旋回処理
+	if (input_->PushKey(DIK_A)) {
+		worldTransform_.rotation_.y -= kRotSpeed;
+	}
+	else if(input_->PushKey(DIK_D)) {
+		worldTransform_.rotation_.y += kRotSpeed;
+	}
+
 	// 座標移動(ベクトルの加算)
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, move);
 	
@@ -81,11 +89,7 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	worldTransform_.matWorld_ = MyMath::Vector3MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 
 	// デバック用の値を変える
 	translation[0] = worldTransform_.translation_.x;
