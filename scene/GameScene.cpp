@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// テクスチャ読み込み
-	textureHandle_ = TextureManager::Load("white1x1.png");
+	textureHandle_ = TextureManager::Load("sample.png");
 
 	// 3Dモデルの読み込み
 	playerModel = Model::Create();
