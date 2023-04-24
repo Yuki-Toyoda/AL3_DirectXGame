@@ -5,6 +5,7 @@
 #include "WorldTransform.h"
 #include "Input.h"
 #include "ImGuiManager.h"
+#include "PlayerBullet.h"
 
 /// <summary>
 /// プレイヤークラス
@@ -31,7 +32,10 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
-	Vector3 GetPlayerTranslation() { return worldTransform_.translation_; } 
+	/// <summary>
+	/// プレイヤーの攻撃処理
+	/// </summary>
+	void Attack();
 
 private:
 
@@ -56,6 +60,9 @@ private:
 
 	// 旋回速さ
 	const float kRotSpeed = 0.02f;
+
+	// 弾
+	PlayerBullet* bullet_ = nullptr;
 
 	// デバッグ用
 	float translation[3] = {0.0f, 0.0f, 0.0f};

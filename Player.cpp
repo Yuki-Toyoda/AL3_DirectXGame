@@ -89,7 +89,16 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
+	// 行列の更新
 	worldTransform_.UpdateMatrix();
+
+	// 攻撃処理
+	Attack();
+
+	// 弾の更新処理
+	if (bullet_) {
+		bullet_->Update();
+	}
 
 	// デバック用の値を変える
 	translation[0] = worldTransform_.translation_.x;
@@ -110,5 +119,25 @@ void Player::Update() {
 void Player::Draw(ViewProjection& viewProjection) {
 	// 3Dモデル描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	// 弾描画
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
+
+}
+
+/// <summary>
+/// 
+/// </summary>
+void Player::Attack() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+		// 弾の生成と初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		// 弾を登録する
+		bullet_ = newBullet;
+	}
 
 }
