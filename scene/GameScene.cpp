@@ -10,13 +10,16 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 
 	// 3Dモデルの削除
-	delete playerModel;
+	delete model;
 
 	// カメラの削除
 	delete debugCamera_;
 
 	// プレイヤーの解放
 	delete player_;
+
+	// 敵の解放
+	delete enemy_;
 
 }
 
@@ -30,7 +33,7 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("sample.png");
 
 	// 3Dモデルの読み込み
-	playerModel = Model::Create();
+	model = Model::Create();
 
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -46,7 +49,12 @@ void GameScene::Initialize() {
 	// プレイヤーの生成
 	player_ = new Player();
 	// プレイヤーの初期化
-	player_->Initialize(playerModel, textureHandle_);
+	player_->Initialize(model, textureHandle_);
+
+	// 敵の生成
+	enemy_ = new Enemy();
+	// 敵の初期化
+	enemy_->Initialize(model, {0.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
 
 }
 
@@ -54,6 +62,9 @@ void GameScene::Update() {
 
 	// プレイヤーの更新
 	player_->Update();
+
+	// 敵の更新
+	enemy_->Update();
 
 	// カメラの処理
 	if (isDebugCameraActive_) {
@@ -113,6 +124,7 @@ void GameScene::Draw() {
 	
 	// 描画処理
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
