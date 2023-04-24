@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <cassert>
+#include <list>
 #include "MyMath.h"
 #include "Model.h"
 #include "WorldTransform.h"
@@ -62,7 +63,7 @@ private:
 	const float kRotSpeed = 0.02f;
 
 	// 弾
-	PlayerBullet* bullet_ = nullptr;
+	std::list<PlayerBullet*> bullets_;
 
 	// デバッグ用
 	float translation[3] = {0.0f, 0.0f, 0.0f};
