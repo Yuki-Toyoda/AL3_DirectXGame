@@ -20,6 +20,21 @@ Vector3 MyMath::Add(Vector3 v1, Vector3 v2) {
 }
 
 /// <summary>
+/// 平行移動を無視してスケーリングと回転のみを適用する関数
+/// </summary>
+/// <param name="v">3次元ベクトル</param>
+/// <param name="m">4x4行列</param>
+/// <returns>変換されたベクトル</returns>
+Vector3 MyMath::TransformNormal(const Vector3& v, const Matrix4x4& m) {
+	Vector3 result{
+	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
+	    v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
+	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
+
+	return result;
+}
+
+/// <summary>
 /// 行列の乗算
 /// </summary>
 /// <param name="m1">乗算する行列1</param>

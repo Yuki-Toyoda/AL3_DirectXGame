@@ -14,6 +14,14 @@ public:
 	static Vector3 Add(Vector3 v1, const Vector3 v2);
 
 	/// <summary>
+	/// 平行移動を無視してスケーリングと回転のみを適用する関数
+	/// </summary>
+	/// <param name="v">3次元ベクトル</param>
+	/// <param name="m">4x4行列</param>
+	/// <returns>変換されたベクトル</returns>
+	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
+	/// <summary>
 	/// 行列の乗算
 	/// </summary>
 	/// <param name="m1">乗算する行列1</param>
