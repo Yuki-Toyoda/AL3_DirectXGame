@@ -33,6 +33,16 @@ public:
 
 private:
 
+	/// <summary>
+	/// 接近状態の更新処理
+	/// </summary>
+	void ApproachUpdate();
+
+	/// <summary>
+	/// 離脱状態の更新処理
+	/// </summary>
+	void LeaveUpdate();
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 
@@ -44,5 +54,13 @@ private:
 
 	// 速度
 	Vector3 velocity_;
+
+	// 行動パターン
+	enum class Phase {
+		Approach, // 接近する
+		Leave,	  // 離れる
+	};
+
+	Phase phase_ = Phase::Approach;
 
 };

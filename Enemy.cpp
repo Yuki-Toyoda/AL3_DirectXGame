@@ -38,12 +38,25 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 /// </summary>
 void Enemy::Update() {
 
+	switch (phase_) {
+	case Enemy::Phase::Approach:
+
+		// 接近状態の更新処理
+		ApproachUpdate();
+
+		break;
+	case Enemy::Phase::Leave:
+
+		// 離脱状態の更新処理
+		LeaveUpdate();
+
+		break;
+	default:
+		break;
+	}
+
 	// 行列の更新処理
 	worldTransform_.UpdateMatrix();
-
-	// 敵の座標を移動させる
-	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
-
 }
 
 /// <summary>
@@ -55,4 +68,31 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
+}
+
+/// <summary>
+/// 接近状態の更新処理
+/// </summary>
+void Enemy::ApproachUpdate() {
+
+	// ベクトルの初期化
+	velocity_ = {0.0f, 0.0f, -0.5f};
+
+	// 敵の座標を移動させる
+	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
+
+	// 指定の位置まで移動したら離脱
+	if (worldTransform_.translation_.z < 0.0f) {
+		phase_ = Phase::Leave;
+	}
+
+}
+
+void Enemy::LeaveUpdate() {
+
+	// ベクトルの初期化
+	velocity_ = {-0.5f, 0.5f, 0.0f};
+
+	// 敵の座標を移動させる
+	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 }
