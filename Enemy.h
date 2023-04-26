@@ -43,7 +43,9 @@ public:
 
 private:
 
-	// 行動関数のポインタ
+	/// <summary>
+	/// 行動関数のポインタ
+	/// </summary>
 	static void (Enemy::*ActionUpdate[])();
 
 	// ワールド変換データ

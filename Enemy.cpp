@@ -58,6 +58,7 @@ void Enemy::Update() {
 	//	break;
 	//}
 
+	// 敵の更新処理
 	(this->*ActionUpdate[static_cast<size_t>(phase_)])();
 
 	// 行列の更新処理
@@ -102,6 +103,10 @@ void Enemy::LeaveUpdate() {
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 }
 
+
+/// <summary>
+/// 行動関数ポインタの実態
+/// </summary>
 void (Enemy::*Enemy::ActionUpdate[])() = {
 	&Enemy::ApproachUpdate, // 要素1
 	&Enemy::LeaveUpdate     // 要素2
