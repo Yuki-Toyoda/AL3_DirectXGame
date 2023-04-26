@@ -31,8 +31,6 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
-private:
-
 	/// <summary>
 	/// 接近状態の更新処理
 	/// </summary>
@@ -42,6 +40,11 @@ private:
 	/// 離脱状態の更新処理
 	/// </summary>
 	void LeaveUpdate();
+
+private:
+
+	// 行動関数のポインタ
+	static void (Enemy::*ActionUpdate[])();
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;

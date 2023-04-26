@@ -31,6 +31,9 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	// 引数で受け取った速度をメンバ変数に代入する
 	velocity_ = velocity;
 
+	// 行動関数のポインタに最初の行動関数を入れる
+	ActionUpdate[0] = &Enemy::ApproachUpdate;
+
 }
 
 /// <summary>
@@ -38,22 +41,24 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 /// </summary>
 void Enemy::Update() {
 
-	switch (phase_) {
-	case Enemy::Phase::Approach:
+	//switch (phase_) {
+	//case Enemy::Phase::Approach:
 
-		// 接近状態の更新処理
-		ApproachUpdate();
+	//	// 接近状態の更新処理
+	//	ApproachUpdate();
 
-		break;
-	case Enemy::Phase::Leave:
+	//	break;
+	//case Enemy::Phase::Leave:
 
-		// 離脱状態の更新処理
-		LeaveUpdate();
+	//	// 離脱状態の更新処理
+	//	LeaveUpdate();
 
-		break;
-	default:
-		break;
-	}
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	(this->*ActionUpdate[static_cast<size_t>(phase_)])();
 
 	// 行列の更新処理
 	worldTransform_.UpdateMatrix();
@@ -96,3 +101,8 @@ void Enemy::LeaveUpdate() {
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 }
+
+void (Enemy::*Enemy::ActionUpdate[])() = {
+	&Enemy::ApproachUpdate, // 要素1
+	&Enemy::LeaveUpdate     // 要素2
+};
