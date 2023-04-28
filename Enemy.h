@@ -31,6 +31,18 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+	/// <summary>
+	/// 引数で指定したぶんだけ敵を動かす関数
+	/// </summary>
+	/// <param name="vector">移動量のベクトル</param>
+	void MoveEnemy(const Vector3& vector);
+
+	/// <summary>
+	/// 敵の現在座標を返すゲッター
+	/// </summary>
+	/// <returns>敵の現在座標</returns>
+	Vector3 GetEnemyTranslation() { return worldTransform_.translation_; }
+
 private:
 
 	/// <summary>
@@ -42,6 +54,8 @@ private:
 	/// 離脱状態の更新処理
 	/// </summary>
 	void LeaveUpdate();
+
+	BaseEnemyState* State;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -63,4 +77,31 @@ private:
 
 	Phase phase_ = Phase::Approach;
 
+};
+
+/// <summary>
+/// 敵の行動管理クラス
+/// </summary>
+class BaseEnemyState {
+public:
+	/// <summary>
+	/// 更新処理(仮想関数)
+	/// </summary>
+	virtual void Update();
+};
+
+class EnemyStateApproach : public BaseEnemyState {
+public:
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Update();
+};
+
+class EnemyStateLeave : public BaseEnemyState {
+public:
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Update();
 };

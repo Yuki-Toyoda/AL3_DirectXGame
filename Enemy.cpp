@@ -96,3 +96,25 @@ void Enemy::LeaveUpdate() {
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 }
+
+void Enemy::MoveEnemy(const Vector3& vector) {
+
+	// ベクトルの初期化
+	velocity_ = vector;
+
+	// 敵の座標を移動させる
+	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
+
+}
+
+void BaseEnemyState::Update() {
+
+}
+
+void EnemyStateApproach::Update() {
+
+}
+
+void EnemyStateLeave::Update() {
+
+}
