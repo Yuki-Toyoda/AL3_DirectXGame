@@ -5,7 +5,7 @@ Enemy::Enemy() {
 }
 
 Enemy::~Enemy() {
-	
+
 }
 
 /// <summary>
@@ -84,6 +84,10 @@ void Enemy::ChangeEnemyState(BaseEnemyState* enemyState) {
 	
 	// NULLチェック
 	assert(enemyState);
+	// 元のステートを削除
+	delete state;
+	// ステートを新規作成
+	state = new EnemyStateLeave;
 	// 行動状態セット
 	state = enemyState; 
 
