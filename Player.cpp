@@ -13,7 +13,6 @@ Player::Player() {
 Player::~Player() {
 
 	// 弾の解放
-	// 弾描画
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}

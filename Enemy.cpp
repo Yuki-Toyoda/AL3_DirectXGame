@@ -6,6 +6,11 @@ Enemy::Enemy() {
 
 Enemy::~Enemy() {
 	
+	// 弾の解放
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
+
 }
 
 /// <summary>
@@ -31,6 +36,9 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	// 引数で受け取った速度をメンバ変数に代入する
 	velocity_ = velocity;
 
+	// 射撃処理
+	Fire();
+
 }
 
 /// <summary>
@@ -42,7 +50,7 @@ void Enemy::Update() {
 	case Enemy::Phase::Approach:
 
 		// 接近状態の更新処理
-		ApproachUpdate();
+		//ApproachUpdate();
 
 		break;
 	case Enemy::Phase::Leave:
@@ -53,6 +61,11 @@ void Enemy::Update() {
 		break;
 	default:
 		break;
+	}
+
+	// 弾の更新処理
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
 	}
 
 	// 行列の更新処理
@@ -67,6 +80,32 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	// 弾描画
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
+
+}
+
+/// <summary>
+/// 敵の射撃処理
+/// </summary>
+void Enemy::Fire() {
+
+	// 弾速
+	const float kBulletSpeed = -1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+
+	// 速度ベクトルを自機の向きに合わせて回転させる
+	velocity = MyMath::TransformNormal(velocity, worldTransform_.matWorld_);
+
+	// 弾の生成と初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+
+	// 弾を登録する
+	bullets_.push_back(newBullet);
 
 }
 

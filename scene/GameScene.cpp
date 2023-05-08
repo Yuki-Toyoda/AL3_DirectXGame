@@ -54,7 +54,7 @@ void GameScene::Initialize() {
 	// 敵の生成
 	enemy_ = new Enemy();
 	// 敵の初期化
-	enemy_->Initialize(model, {0.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
+	enemy_->Initialize(model, {5.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
 
 }
 

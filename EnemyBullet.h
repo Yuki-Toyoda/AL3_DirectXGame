@@ -1,22 +1,17 @@
 ﻿#pragma once
 #include <cassert>
+#include <WorldTransform.h>
 #include <Model.h>
 #include "MyMath.h"
-#include "EnemyBullet.h"
-
-/// <summary>
-/// 敵のクラス
-/// </summary>
-class Enemy {
+class EnemyBullet {
 public:
-
-	Enemy();
-	~Enemy();
+	EnemyBullet();
+	~EnemyBullet();
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	/// <param name="model">3Dモデル</param>
+	/// <param name="model">弾のモデル</param>
 	/// <param name="position">初期座標</param>
 	/// <param name="velocity">速度</param>
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
@@ -33,21 +28,12 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	/// <summary>
-	/// 敵の発射処理
+	/// 弾が消滅するかどうかを取得するゲッター
 	/// </summary>
-	void Fire();
+	/// <returns></returns>
+	bool IsDead() const { return isDead_; }
 
 private:
-
-	/// <summary>
-	/// 接近状態の更新処理
-	/// </summary>
-	void ApproachUpdate();
-
-	/// <summary>
-	/// 離脱状態の更新処理
-	/// </summary>
-	void LeaveUpdate();
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -61,15 +47,12 @@ private:
 	// 速度
 	Vector3 velocity_;
 
-	// 行動パターン
-	enum class Phase {
-		Approach, // 接近する
-		Leave,	  // 離れる
-	};
+	// 存在する時間
+	static const int32_t kLifeTime = 60 * 5;
 
-	Phase phase_ = Phase::Approach;
-
-	// 弾
-	std::list<EnemyBullet*> bullets_;
+	// デスタイマー
+	int32_t deathTimer_ = kLifeTime;
+	// デスフラグ
+	bool isDead_ = false;
 
 };
