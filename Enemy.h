@@ -3,6 +3,8 @@
 #include <Model.h>
 #include "MyMath.h"
 
+class BaseEnemyState;
+
 /// <summary>
 /// 敵のクラス
 /// </summary>
@@ -32,16 +34,22 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	/// <summary>
-	/// 引数で指定したぶんだけ敵を動かす関数
+	/// 引数で指定した移動量だけ移動させる変数
 	/// </summary>
-	/// <param name="vector">移動量のベクトル</param>
-	void MoveEnemy(const Vector3& vector);
+	/// <param name="velocity">移動量ベクトル</param>
+	void MoveEnemy(const Vector3& velocity);
 
 	/// <summary>
 	/// 敵の現在座標を返すゲッター
 	/// </summary>
 	/// <returns>敵の現在座標</returns>
 	Vector3 GetEnemyTranslation() { return worldTransform_.translation_; }
+
+	/// <summary>
+	/// 敵の行動状態を変更する関数
+	/// </summary>
+	/// <param name="enemyState">次の敵の行動状態</param>
+	void ChangeEnemyState(BaseEnemyState* enemyState);
 
 private:
 
@@ -55,7 +63,7 @@ private:
 	/// </summary>
 	void LeaveUpdate();
 
-	BaseEnemyState* State;
+	BaseEnemyState* state = nullptr;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -84,10 +92,17 @@ private:
 /// </summary>
 class BaseEnemyState {
 public:
+
 	/// <summary>
 	/// 更新処理(仮想関数)
 	/// </summary>
-	virtual void Update();
+	virtual void Update(Enemy* enemy) = 0;
+
+protected:
+
+	// 敵の現在座標
+	Vector3 translation;
+
 };
 
 class EnemyStateApproach : public BaseEnemyState {
@@ -95,7 +110,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(Enemy* enemy);
 };
 
 class EnemyStateLeave : public BaseEnemyState {
@@ -103,5 +118,5 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(Enemy* enemy);
 };

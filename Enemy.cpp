@@ -31,6 +31,9 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	// 引数で受け取った速度をメンバ変数に代入する
 	velocity_ = velocity;
 
+	// 行動状態の設定
+	state = new EnemyStateApproach();
+
 }
 
 /// <summary>
@@ -38,22 +41,25 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 /// </summary>
 void Enemy::Update() {
 
-	switch (phase_) {
-	case Enemy::Phase::Approach:
+	//switch (phase_) {
+	//case Enemy::Phase::Approach:
 
-		// 接近状態の更新処理
-		ApproachUpdate();
+	//	// 接近状態の更新処理
+	//	ApproachUpdate();
 
-		break;
-	case Enemy::Phase::Leave:
+	//	break;
+	//case Enemy::Phase::Leave:
 
-		// 離脱状態の更新処理
-		LeaveUpdate();
+	//	// 離脱状態の更新処理
+	//	LeaveUpdate();
 
-		break;
-	default:
-		break;
-	}
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	// 行動の更新処理
+	state->Update(this);
 
 	// 行列の更新処理
 	worldTransform_.UpdateMatrix();
@@ -67,6 +73,19 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+}
+
+/// <summary>
+/// 敵の行動状態を変更する関数
+/// </summary>
+/// <param name="enemyState">次の敵の行動状態</param>
+void Enemy::ChangeEnemyState(BaseEnemyState* enemyState) { 
+	
+	// NULLチェック
+	assert(enemyState);
+	// 行動状態セット
+	state = enemyState; 
 
 }
 
@@ -97,24 +116,41 @@ void Enemy::LeaveUpdate() {
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 }
 
-void Enemy::MoveEnemy(const Vector3& vector) {
+void Enemy::MoveEnemy(const Vector3& velocity) {
 
 	// ベクトルの初期化
-	velocity_ = vector;
+	velocity_ = velocity;
 
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
 
 }
 
-void BaseEnemyState::Update() {
+void BaseEnemyState::Update(Enemy* enemy) {
+	// 敵の現在座標の取得
+	translation = enemy->GetEnemyTranslation();
+}
+
+void EnemyStateApproach::Update(Enemy* enemy) {
+
+	// 敵の現在座標の取得
+	translation = enemy->GetEnemyTranslation();
+
+	// 移動処理
+	enemy->MoveEnemy({0.0f, 0.0f, -0.5f});
+	if (translation.z < 0.0f) {
+		// 敵の行動状態
+		enemy->ChangeEnemyState(new EnemyStateLeave());
+	}
 
 }
 
-void EnemyStateApproach::Update() {
+void EnemyStateLeave::Update(Enemy* enemy) {
 
-}
+	// 敵の現在座標の取得
+	translation = enemy->GetEnemyTranslation();
 
-void EnemyStateLeave::Update() {
+	// 移動処理
+	enemy->MoveEnemy({-0.5f, 0.5f, 0.0f});
 
 }

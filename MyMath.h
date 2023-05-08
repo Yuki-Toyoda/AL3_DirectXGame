@@ -6,6 +6,24 @@ class MyMath {
 public:
 	
 	/// <summary>
+	/// Vector3用線形補間関数(Normal)
+	/// </summary>
+	/// <param name="t">0.0f ~ 1.0f の値</param>
+	/// <param name="start">開始座標</param>
+	/// <param name="end">終端座標</param>
+	/// <returns>移動した後の値</returns>
+	static Vector3 ConstantLinear(float t, Vector3 start, Vector3 end) { 
+		
+		// 結果格納用
+		Vector3 result;
+
+		result.x = (1.0f - t) * start.x + t * end.x;
+		result.y = (1.0f - t) * start.y + t * end.y;
+		result.z = (1.0f - t) * start.z + t * end.z;
+
+	}
+
+	/// <summary>
 	/// 3次元ベクトルの加算関数
 	/// </summary>
 	/// <param name="v1">ベクトル1</param>
