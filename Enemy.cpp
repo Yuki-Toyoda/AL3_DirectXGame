@@ -36,8 +36,8 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	// 引数で受け取った速度をメンバ変数に代入する
 	velocity_ = velocity;
 
-	// 射撃処理
-	Fire();
+	// 射撃タイマー初期化
+	FireTimerInitialize();
 
 }
 
@@ -50,7 +50,7 @@ void Enemy::Update() {
 	case Enemy::Phase::Approach:
 
 		// 接近状態の更新処理
-		//ApproachUpdate();
+		ApproachUpdate();
 
 		break;
 	case Enemy::Phase::Leave:
@@ -110,12 +110,20 @@ void Enemy::Fire() {
 }
 
 /// <summary>
+/// 射撃タイマー初期化
+/// </summary>
+void Enemy::FireTimerInitialize() {
+	// タイマー初期化
+	this->fireTimer = this->kFireInterval;
+}
+
+/// <summary>
 /// 接近状態の更新処理
 /// </summary>
 void Enemy::ApproachUpdate() {
 
 	// ベクトルの初期化
-	velocity_ = {0.0f, 0.0f, -0.5f};
+	velocity_ = {0.0f, 0.0f, -0.25f};
 
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
@@ -123,6 +131,16 @@ void Enemy::ApproachUpdate() {
 	// 指定の位置まで移動したら離脱
 	if (worldTransform_.translation_.z < 0.0f) {
 		phase_ = Phase::Leave;
+	}
+
+	// 発射タイマーカウントダウン
+	fireTimer--;
+	// 指定時間に達したら
+	if (fireTimer <= 0) {
+		// 弾を発射
+		Fire();
+		// 発射タイマー初期化
+		FireTimerInitialize();
 	}
 
 }

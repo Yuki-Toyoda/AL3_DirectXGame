@@ -6,11 +6,6 @@ EnemyBullet::EnemyBullet() {
 
 EnemyBullet::~EnemyBullet() {
 
-	// 弾の解放
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
-
 }
 
 /// <summary>

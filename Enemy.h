@@ -37,6 +37,11 @@ public:
 	/// </summary>
 	void Fire();
 
+	/// <summary>
+	/// 敵の射撃タイマー初期化
+	/// </summary>
+	void FireTimerInitialize();
+
 private:
 
 	/// <summary>
@@ -71,5 +76,9 @@ private:
 
 	// 弾
 	std::list<EnemyBullet*> bullets_;
+
+	// 発射間隔
+	static const int kFireInterval = 30;
+	int32_t fireTimer = 0;
 
 };
