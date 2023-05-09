@@ -163,3 +163,14 @@ void Player::Attack() {
 	}
 
 }
+
+Vector3 Player::GetWorldPosition() {
+
+	// 結果格納用
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得
+	worldPos = MyMath::TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	// 結果を返す
+	return worldPos;
+}

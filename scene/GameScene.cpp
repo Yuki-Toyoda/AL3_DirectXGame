@@ -56,6 +56,9 @@ void GameScene::Initialize() {
 	// 敵の初期化
 	enemy_->Initialize(model, {5.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
 
+	// 敵キャラに時キャラのポインタを渡す
+	enemy_->SetPlayer(player_);
+
 }
 
 void GameScene::Update() {

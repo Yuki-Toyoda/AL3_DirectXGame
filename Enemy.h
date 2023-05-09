@@ -4,6 +4,9 @@
 #include "MyMath.h"
 #include "EnemyBullet.h"
 
+// プレイヤークラスの前方宣言
+class Player;
+
 /// <summary>
 /// 敵のクラス
 /// </summary>
@@ -41,6 +44,18 @@ public:
 	/// 敵の射撃タイマー初期化
 	/// </summary>
 	void FireTimerInitialize();
+
+	/// <summary>
+	/// プレイヤーを取得する関数
+	/// </summary>
+	/// <param name="player"></param>
+	void SetPlayer(Player* player) { player_ = player; }
+
+	/// <summary>
+	/// 敵の現在座標を取得する
+	/// </summary>
+	/// <returns>敵の現在座標</returns>
+	Vector3 GetWorldPosition();
 
 private:
 
@@ -80,5 +95,8 @@ private:
 	// 発射間隔
 	static const int kFireInterval = 30;
 	int32_t fireTimer = 0;
+
+	// プレイヤー
+	Player* player_ = nullptr;
 
 };

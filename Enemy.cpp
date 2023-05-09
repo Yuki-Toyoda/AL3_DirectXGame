@@ -1,16 +1,15 @@
 ﻿#include "Enemy.h"
+#include "Player.h"
 
 Enemy::Enemy() {
 
 }
 
 Enemy::~Enemy() {
-	
 	// 弾の解放
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
 	}
-
 }
 
 /// <summary>
@@ -89,16 +88,39 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 }
 
 /// <summary>
+/// 敵の現在座標を取得する
+/// </summary>
+/// <returns>敵の現在座標</returns>
+Vector3 Enemy::GetWorldPosition() {
+	// 結果格納用
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得
+	worldPos = MyMath::TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	// 結果を返す
+	return worldPos;
+}
+
+/// <summary>
 /// 敵の射撃処理
 /// </summary>
 void Enemy::Fire() {
 
+	// Nullチェック
+	assert(player_);
+
 	// 弾速
-	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	const float kBulletSpeed = 0.5f;
+
+	Vector3 playerTranslation = player_->GetWorldPosition();
+	Vector3 enemyTranslation = GetWorldPosition();
+
+	Vector3 vectorDif = playerTranslation - enemyTranslation;
+	vectorDif = MyMath::Normalize(vectorDif);
 
 	// 速度ベクトルを自機の向きに合わせて回転させる
-	velocity = MyMath::TransformNormal(velocity, worldTransform_.matWorld_);
+	Vector3 velocity = {
+	    (vectorDif.x * kBulletSpeed), (vectorDif.y * kBulletSpeed), (vectorDif.z * kBulletSpeed)};
 
 	// 弾の生成と初期化
 	EnemyBullet* newBullet = new EnemyBullet();
@@ -123,7 +145,7 @@ void Enemy::FireTimerInitialize() {
 void Enemy::ApproachUpdate() {
 
 	// ベクトルの初期化
-	velocity_ = {0.0f, 0.0f, -0.25f};
+	velocity_ = {0.0f, 0.0f, -0.05f};
 
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);

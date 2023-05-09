@@ -34,6 +34,43 @@ Vector3 MyMath::TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	return result;
 }
 
+// 内積
+float MyMath::Dot(const Vector3& v1, const Vector3& v2) {
+
+	// 結果格納用
+	float result;
+
+	// 計算処理
+	result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+
+	return result;
+}
+
+// 長さ
+float MyMath::Length(const Vector3& v) {
+
+	// 計算処理
+	return sqrtf(MyMath::Dot(v, v));
+}
+
+// 正規化
+Vector3 MyMath::Normalize(const Vector3& v) {
+
+	// 正規化するベクトルの長さを求める
+	float length = sqrtf((v.x * v.x) + (v.y * v.y) + (v.z, v.z));
+	// 結果格納用
+	Vector3 result;
+
+	// 計算処理
+	if (length != 0) {
+		result.x = v.x / length;
+		result.y = v.y / length;
+		result.z = v.z / length;
+	}
+
+	return result;
+}
+
 /// <summary>
 /// 行列の乗算
 /// </summary>

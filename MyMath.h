@@ -21,6 +21,15 @@ public:
 	/// <returns>変換されたベクトル</returns>
 	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
+	// 内積
+	static float Dot(const Vector3& v1, const Vector3& v2);
+
+	// 長さ
+	static float Length(const Vector3& v);
+
+	// 正規化
+	static Vector3 Normalize(const Vector3& v);
+
 	/// <summary>
 	/// 行列の乗算
 	/// </summary>

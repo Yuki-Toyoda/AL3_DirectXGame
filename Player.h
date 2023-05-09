@@ -38,6 +38,12 @@ public:
 	/// </summary>
 	void Attack();
 
+	/// <summary>
+	/// プレイヤーのワールド座標のゲッター
+	/// </summary>
+	/// <returns>プレイヤーのワールド座標</returns>
+	Vector3 GetWorldPosition();
+
 private:
 
 	// キーボード入力
