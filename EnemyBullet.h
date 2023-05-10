@@ -33,6 +33,17 @@ public:
 	/// <returns></returns>
 	bool IsDead() const { return isDead_; }
 
+	/// <summary>
+	/// 衝突判定コールバック関数
+	/// </summary>
+	void OnCollision();
+
+	/// <summary>
+	/// 敵弾のワールド座標のゲッター
+	/// </summary>
+	/// <returns>敵弾のワールド座標</returns>
+	Vector3 GetWorldPosition();
+
 private:
 
 	// ワールド変換データ

@@ -58,3 +58,25 @@ void EnemyBullet::Draw(const ViewProjection& viewProjection) {
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
+
+/// <summary>
+/// 衝突判定関数
+/// </summary>
+void EnemyBullet::OnCollision() { 
+	// 死亡フラグtrue
+	isDead_ = true; 
+}
+
+/// <summary>
+/// 敵弾のワールド座標のゲッター
+/// </summary>
+/// <returns>敵弾のワールド座標</returns>
+Vector3 EnemyBullet::GetWorldPosition() {
+	// 結果格納用
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得
+	worldPos = MyMath::TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	// 結果を返す
+	return worldPos;
+}

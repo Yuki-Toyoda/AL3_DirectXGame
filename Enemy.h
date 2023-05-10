@@ -57,6 +57,17 @@ public:
 	/// <returns>敵の現在座標</returns>
 	Vector3 GetWorldPosition();
 
+	/// <summary>
+	/// 衝突判定コールバック関数
+	/// </summary>
+	void OnCollision();
+
+	/// <summary>
+	/// 弾のリストを取得するゲッター
+	/// </summary>
+	/// <returns>弾のリスト</returns>
+	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+
 private:
 
 	/// <summary>

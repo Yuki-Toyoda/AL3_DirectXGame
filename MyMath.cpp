@@ -57,15 +57,25 @@ float MyMath::Length(const Vector3& v) {
 Vector3 MyMath::Normalize(const Vector3& v) {
 
 	// 正規化するベクトルの長さを求める
-	float length = sqrtf((v.x * v.x) + (v.y * v.y) + (v.z, v.z));
+	float length = sqrtf(Length(v));
 	// 結果格納用
 	Vector3 result;
 
 	// 計算処理
-	if (length != 0) {
+	if (v.x != 0.0f) {
 		result.x = v.x / length;
+	} else {
+		result.x = 0.0f;
+	}
+	if (v.y != 0.0f) {
 		result.y = v.y / length;
+	} else {
+		result.y = 0.0f;
+	}
+	if (v.z != 0.0f) {
 		result.z = v.z / length;
+	} else {
+		result.z = 0.0f;
 	}
 
 	return result;

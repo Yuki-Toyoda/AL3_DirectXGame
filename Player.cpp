@@ -174,3 +174,10 @@ Vector3 Player::GetWorldPosition() {
 	// 結果を返す
 	return worldPos;
 }
+
+/// <summary>
+/// 衝突判定関数
+/// </summary>
+void Player::OnCollision() {
+	
+}

@@ -54,7 +54,7 @@ void GameScene::Initialize() {
 	// 敵の生成
 	enemy_ = new Enemy();
 	// 敵の初期化
-	enemy_->Initialize(model, {5.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
+	enemy_->Initialize(model, {10.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
 
 	// 敵キャラに時キャラのポインタを渡す
 	enemy_->SetPlayer(player_);
@@ -82,6 +82,9 @@ void GameScene::Update() {
 		// viewProjection行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
+
+	// 当たり判定チェック
+	CheckAllCollisions();
 
 	#ifdef _DEBUG
 
@@ -145,4 +148,56 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollisions() {
+
+	// 判定対象AとBの座標
+	Vector3 posA, posB;
+
+	// プレイヤーの弾のリストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	// 敵の弾のリストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+	// プレイヤーの座標取得
+	posA = player_->GetWorldPosition();
+
+	// プレイヤーと敵の弾全ての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+		// 敵弾の座標取得
+		posB = bullet->GetWorldPosition();
+
+		// プレイヤーと敵弾の距離を求める
+		Vector3 distance = posB - posA;
+
+		if (pow(distance.x, 2) + pow(distance.y, 2) + pow(distance.z, 2) <=
+		    (15 + 15)) {
+			// プレイヤーの衝突判定関数を呼び出す
+			player_->OnCollision();
+			// 敵弾の衝突判定関数を呼び出す
+			bullet->OnCollision();
+		}
+
+	}
+
+	// 敵の座標取得
+	posA = enemy_->GetWorldPosition();
+
+	// プレイヤーと敵の弾全ての当たり判定
+	for (PlayerBullet* bullet : playerBullets) {
+		// 敵弾の座標取得
+		posB = bullet->GetWorldPosition();
+
+		// プレイヤーと敵弾の距離を求める
+		Vector3 distance = posB - posA;
+
+		if (pow(distance.x, 2) + pow(distance.y, 2) + pow(distance.z, 2) <= (15 + 15)) {
+			// プレイヤーの衝突判定関数を呼び出す
+			enemy_->OnCollision();
+			// 敵弾の衝突判定関数を呼び出す
+			bullet->OnCollision();
+		}
+	}
+
 }

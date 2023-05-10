@@ -67,6 +67,15 @@ void Enemy::Update() {
 		bullet->Update();
 	}
 
+	// デスフラグの立った弾を削除
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
 	// 行列の更新処理
 	worldTransform_.UpdateMatrix();
 }
@@ -140,12 +149,19 @@ void Enemy::FireTimerInitialize() {
 }
 
 /// <summary>
+/// 衝突判定関数
+/// </summary>
+void Enemy::OnCollision() {
+
+}
+
+/// <summary>
 /// 接近状態の更新処理
 /// </summary>
 void Enemy::ApproachUpdate() {
 
 	// ベクトルの初期化
-	velocity_ = {0.0f, 0.0f, -0.05f};
+	velocity_ = {0.0f, 0.0f, -0.00f};
 
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);

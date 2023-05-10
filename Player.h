@@ -44,6 +44,17 @@ public:
 	/// <returns>プレイヤーのワールド座標</returns>
 	Vector3 GetWorldPosition();
 
+	/// <summary>
+	/// 衝突判定コールバック関数
+	/// </summary>
+	void OnCollision();
+
+	/// <summary>
+	/// 弾のリストを取得するゲッター
+	/// </summary>
+	/// <returns>弾のリスト</returns>
+	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+
 private:
 
 	// キーボード入力
