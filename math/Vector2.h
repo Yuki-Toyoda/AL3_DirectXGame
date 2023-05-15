@@ -7,6 +7,7 @@ struct Vector2 final {
 	float x;
 	float y;
 
+	// 演算子のオーバーロード
 	Vector2 operator+(const Vector2 v1) {
 		// 結果格納用
 		Vector2 result;
