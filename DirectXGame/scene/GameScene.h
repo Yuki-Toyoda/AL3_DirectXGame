@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Enemy.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
@@ -48,4 +51,24 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+
+	// デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
+	// デバックカメラを有効
+	bool isDebugCameraActive_ = false;
+
+	// 3Dモデル
+	Model* model = nullptr;
+
+	// ビュープロジェクション
+	ViewProjection viewProjection_;
+
+	// プレイヤー
+	Player* player_ = nullptr;
+
+	// 敵
+	Enemy* enemy_ = nullptr;
 };
