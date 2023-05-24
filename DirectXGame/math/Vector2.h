@@ -17,7 +17,6 @@ struct Vector2 final {
 
 		// 計算結果を返す
 		return result;
-
 	}
 
 	Vector2 operator-(const Vector2 v1) {
