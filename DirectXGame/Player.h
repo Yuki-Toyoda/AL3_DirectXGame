@@ -55,6 +55,12 @@ public:
 	/// <returns>弾のリスト</returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
+	/// <summary>
+	/// 親子関係をセットするセッター
+	/// </summary>
+	/// <param name="parent">親</param>
+	void SetParent(const WorldTransform* parent);
+
 private:
 
 	// キーボード入力

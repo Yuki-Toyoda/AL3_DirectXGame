@@ -40,6 +40,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// ワールド座標の初期化
 	worldTransform_.Initialize();
+	worldTransform_.translation_.z = 50.0f;
 
 	// 移動ベクトルの初期化
 	move = {0.0f, 0.0f, 0.0f};
@@ -156,7 +157,7 @@ void Player::Attack() {
 
 		// 弾の生成と初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
@@ -169,7 +170,9 @@ Vector3 Player::GetWorldPosition() {
 	// 結果格納用
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得
-	worldPos = MyMath::TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	// 結果を返す
 	return worldPos;
@@ -180,4 +183,13 @@ Vector3 Player::GetWorldPosition() {
 /// </summary>
 void Player::OnCollision() {
 	
+}
+
+/// <summary>
+/// 親子関係をセットするセッター
+/// </summary>
+/// <param name="parent">親</param>
+void Player::SetParent(const WorldTransform* parent) {
+	// 親子関係を結ぶ
+	worldTransform_.parent_ = parent;
 }

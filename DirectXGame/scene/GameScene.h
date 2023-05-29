@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio.h"
+#include "RailCamera.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
@@ -60,6 +61,9 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 	// デバックカメラを有効
 	bool isDebugCameraActive_ = false;
+
+	// レールカメラ
+	RailCamera* railCamera = nullptr;
 
 	// 3Dモデル
 	Model* model = nullptr;

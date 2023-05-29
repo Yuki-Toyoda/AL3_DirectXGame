@@ -50,10 +50,16 @@ void GameScene::Initialize() {
 	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
+	// レールカメラの生成
+	railCamera = new RailCamera();
+	railCamera->Initialize({0.0f, 0.0f, -100.0f}, {0.0f, 0.0f, 0.0f});
+
 	// プレイヤーの生成
 	player_ = new Player();
 	// プレイヤーの初期化
 	player_->Initialize(model, textureHandle_);
+	// 親子関係を設定
+	player_->SetParent(&railCamera->GetWorldMatrix());
 
 	// 敵の生成
 	enemy_ = new Enemy();
@@ -74,6 +80,9 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+	// レールカメラ更新
+	railCamera->Update();
+
 	// プレイヤーの更新
 	player_->Update();
 
@@ -93,8 +102,11 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 
 	} else {
-		// viewProjection行列の更新と転送
-		viewProjection_.UpdateMatrix();
+
+		// ビュープロジェクションをレールカメラにする
+		viewProjection_.matView = railCamera->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	}
 
 #ifdef _DEBUG

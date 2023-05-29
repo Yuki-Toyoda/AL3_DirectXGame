@@ -40,6 +40,13 @@ public:
 	static Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2);
 
 	/// <summary>
+	/// 逆行列
+	/// </summary>
+	/// <param name="m">逆行列する行列</param>
+	/// <returns>逆行列</returns>
+	static Matrix4x4 Inverse(const Matrix4x4& m);
+
+	/// <summary>
 	/// 平行移動行列
 	/// </summary>
 	/// <param name="translate">三次元ベクトル</param>
