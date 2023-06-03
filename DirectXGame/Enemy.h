@@ -7,6 +7,9 @@
 // プレイヤークラスの前方宣言
 class Player;
 
+// ゲームシーンクラスの前方宣言
+class GameScene;
+
 /// <summary>
 /// 敵のクラス
 /// </summary>
@@ -20,9 +23,12 @@ public:
 	/// 初期化処理
 	/// </summary>
 	/// <param name="model">3Dモデル</param>
+	/// <param name="gameScene">ゲームシーン</param>
 	/// <param name="position">初期座標</param>
 	/// <param name="velocity">速度</param>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	/// <param name="player">player</param>
+	void Initialize(
+	    Model* model, GameScene* gameScene, const Vector3& position, const Vector3& velocity, Player* player);
 
 	/// <summary>
 	/// 更新処理
@@ -68,6 +74,18 @@ public:
 	/// <returns>弾のリスト</returns>
 	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
 
+	/// <summary>
+	/// ゲームシーンのセッター
+	/// </summary>
+	/// <param name="gameScene"></param>
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
+	/// <summary>
+	/// 死亡状態のゲッター
+	/// </summary>
+	/// <returns>死亡状態</returns>
+	bool GetIsDead() { return isDead_; }
+
 private:
 
 	/// <summary>
@@ -109,5 +127,10 @@ private:
 
 	// プレイヤー
 	Player* player_ = nullptr;
+	// ゲームシーン
+	GameScene* gameScene_ = nullptr;
+
+	// デスフラグ
+	bool isDead_;
 
 };

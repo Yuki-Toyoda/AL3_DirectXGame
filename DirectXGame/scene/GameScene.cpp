@@ -20,7 +20,19 @@ GameScene::~GameScene() {
 	delete player_;
 
 	// 敵の解放
-	delete enemy_;
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
+
+	// プレイヤー弾の解放
+	for (PlayerBullet* bullet : playerBullets_) {
+		delete bullet;
+	}
+
+	// 敵弾の解放
+	for (EnemyBullet* bullet : enemyBullets_) {
+		delete bullet;
+	}
 
 	// 天球の削除
 	delete skyDome_;
@@ -47,6 +59,9 @@ void GameScene::Initialize() {
 	// 軸方向が参照するビュープロジェクションを指定する
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
+	// セットランド
+	MyMath::SetSrand();
+
 	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -57,17 +72,9 @@ void GameScene::Initialize() {
 	// プレイヤーの生成
 	player_ = new Player();
 	// プレイヤーの初期化
-	player_->Initialize(model, textureHandle_);
+	player_->Initialize(model, textureHandle_, this);
 	// 親子関係を設定
 	player_->SetParent(&railCamera->GetWorldMatrix());
-
-	// 敵の生成
-	enemy_ = new Enemy();
-	// 敵の初期化
-	enemy_->Initialize(model, {0.0f, 1.0f, 50.0f}, {0.0f, 0.0f, -0.5f});
-
-	// 敵キャラに時キャラのポインタを渡す
-	enemy_->SetPlayer(player_);
 
 	// 天球モデルの生成
 	modelSkyDome_ = Model::CreateFromOBJ("SkyDome", true);
@@ -86,8 +93,57 @@ void GameScene::Update() {
 	// プレイヤーの更新
 	player_->Update();
 
+	// プレイヤー弾の更新処理
+	for (PlayerBullet* bullet : playerBullets_) {
+		bullet->Update();
+	}
+
 	// 敵の更新
-	enemy_->Update();
+	for (Enemy* enemy : enemies_) {
+		// 敵が死亡していない状態なら
+		if (!enemy->GetIsDead()) {
+			enemy->Update();
+		}
+	}
+
+	// 敵のスポーン処理
+	if (spawnTimer_ <= 0) {
+
+		SpawnEnemy();
+
+		spawnTimer_ = kSpawnTime;
+
+
+	} else {
+		// スポーンタイマーカウントダウン
+		spawnTimer_--;
+	}
+
+	// 敵弾の更新処理
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Update();
+	}
+
+	// デスフラグが立った敵を削除
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->GetIsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
+	// デスフラグの立った弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
+	// 当たり判定の検証
+	CheckAllCollisions();
 
 	// 天球の更新
 	skyDome_->Update();
@@ -151,7 +207,19 @@ void GameScene::Draw() {
 
 	// 描画処理
 	player_->Draw(viewProjection_);
-	enemy_->Draw(viewProjection_);
+	// プレイヤー弾描画
+	for (PlayerBullet* bullet : playerBullets_) {
+		bullet->Draw(viewProjection_);
+	}
+
+	// 敵描画
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw(viewProjection_);
+	}
+	// 敵弾描画
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw(viewProjection_);
+	}
 	skyDome_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
@@ -170,4 +238,97 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+/// <summary>
+/// 全ての当たり判定を検証する関数
+/// </summary>
+void GameScene::CheckAllCollisions() {
+
+	// ポジション格納用
+	Vector3 posA, posB;
+
+	// プレイヤー座標の取得
+	posA = player_->GetWorldPosition();
+
+	// 敵の弾とプレイヤーの当たり判定を検証
+	for (EnemyBullet* bullet : enemyBullets_) {
+	
+		// ポジションを取得
+		posB = bullet->GetWorldPosition();
+
+		// 敵弾とプレイヤーの距離を求める
+		float distance;
+		distance = float(std::pow((posB.x - posA.x), 2) + std::pow((posB.y - posA.y), 2) + std::pow((posB.z - posA.z), 2));
+
+		// 球の判定同士が衝突していれば
+		if (distance <= std::pow((10 + 10), 2)) {
+			// プレイヤーの衝突関数を呼び出す
+			player_->OnCollision();
+			// 敵の衝突関数を呼び出す
+			bullet->OnCollision();
+		}
+
+	}
+
+	// 全ての敵と自弾の当たり判定を検証
+	for (Enemy* enemy : enemies_) {
+
+		// 敵座標の取得
+		posA = enemy->GetWorldPosition();
+
+		for (PlayerBullet* bullet : playerBullets_) {
+		
+			// プレイヤー弾の取得
+			posB = bullet->GetWorldPosition();
+
+			// 自弾と敵の当たり判定
+			float distance;
+			distance = float(std::pow((posB.x - posA.x), 2) + std::pow((posB.y - posA.y), 2) + std::pow((posB.z - posA.z), 2));
+
+			// 球の判定同士が衝突していれば
+			if (distance <= std::pow((10 + 10), 2)) {
+				// プレイヤーの衝突関数を呼び出す
+				enemy->OnCollision();
+				// 敵の衝突関数を呼び出す
+				bullet->OnCollision();
+			}
+
+		}
+	}
+
+}
+
+/// <summary>
+/// 敵弾を追加する関数
+/// </summary>
+/// <param name="enemyBullet">敵弾</param>
+void GameScene::AddPlayerBullet(PlayerBullet* playerBullet) {
+	// リストに登録する
+	playerBullets_.push_back(playerBullet);
+}
+
+/// <summary>
+/// 敵弾を追加する関数
+/// </summary>
+/// <param name="enemyBullet">敵弾</param>
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
+	// リストに登録する
+	enemyBullets_.push_back(enemyBullet);
+}
+
+/// <summary>
+/// 敵をスポーンさせる関数
+/// </summary>
+void GameScene::SpawnEnemy() {
+
+	// 敵を作る
+	Enemy* newEnemy = new Enemy();
+	// 作った敵を初期化
+	newEnemy->Initialize(
+	    model, this, {MyMath::RandomF(-10.0f, 10.0f, 0), MyMath::RandomF(-10.0f, 10.0f, 0), 100.0f},
+	    {0.0f, 0.0f, -0.05f}, player_);
+	// 敵をリストに登録
+	enemies_.push_back(newEnemy);
+
 }

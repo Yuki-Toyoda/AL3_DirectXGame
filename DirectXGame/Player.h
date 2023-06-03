@@ -8,6 +8,9 @@
 #include "ImGuiManager.h"
 #include "PlayerBullet.h"
 
+// ゲームシーンクラスの前方宣言
+class GameScene;
+
 /// <summary>
 /// プレイヤークラス
 /// </summary>
@@ -21,7 +24,8 @@ public:
 	/// </summary>
 	/// <param name="model">3Dモデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, uint32_t textureHandle);
+	/// <param name="gameScene">ゲームシーン</param>
+	void Initialize(Model* model, uint32_t textureHandle, GameScene* gameScene);
 
 	/// <summary>
 	/// 更新処理
@@ -50,16 +54,16 @@ public:
 	void OnCollision();
 
 	/// <summary>
-	/// 弾のリストを取得するゲッター
-	/// </summary>
-	/// <returns>弾のリスト</returns>
-	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
-
-	/// <summary>
 	/// 親子関係をセットするセッター
 	/// </summary>
 	/// <param name="parent">親</param>
 	void SetParent(const WorldTransform* parent);
+
+	/// <summary>
+	/// ゲームシーンのセッター
+	/// </summary>
+	/// <param name="gameScene"></param>
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 private:
 
@@ -85,10 +89,10 @@ private:
 	// 旋回速さ
 	const float kRotSpeed = 0.02f;
 
-	// 弾
-	std::list<PlayerBullet*> bullets_;
-
 	// デバッグ用
 	float translation[3] = {0.0f, 0.0f, 0.0f};
+
+	// ゲームシーン
+	GameScene* gameScene_ = nullptr;
 
 };

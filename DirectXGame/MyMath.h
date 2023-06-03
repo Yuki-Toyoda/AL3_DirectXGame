@@ -1,11 +1,35 @@
 ﻿#pragma once
 #include <cmath>
+#include <ctime>
 #include <Vector3.h>
 #include <Matrix4x4.h>
 
 class MyMath {
 public:
 	
+	// srandセット関数
+	// 返り値：なし
+	// 引数なし
+	// 指定された範囲内のランダムな値を返す関数(int型)
+	static void SetSrand();
+
+	// ランダム関数（int型）
+	// 返り値：ランダムの値（int型）
+	// 引数：
+	// min ... 最小値
+	// max ... 最大値
+	// 指定された範囲内のランダムな値を返す関数(int型)
+	static int Random(int min, int max);
+
+	// ランダム関数（float型）
+	// 返り値：ランダムの値（float型）
+	// 引数：
+	// min ... 最小値
+	// max ... 最大値
+	// num ... 少数点何桁まで表示するか
+	// 指定された桁数で、範囲内のランダムな値を返す関数(float型)
+	static float RandomF(float min, float max, int num);
+
 	/// <summary>
 	/// 3次元ベクトルの加算関数
 	/// </summary>

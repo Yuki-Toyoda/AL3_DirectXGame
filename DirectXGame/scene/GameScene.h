@@ -45,6 +45,28 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 全ての当たり判定を検証する関数
+	/// </summary>
+	void CheckAllCollisions();
+
+	/// <summary>
+	/// 敵弾を追加する関数
+	/// </summary>
+	/// <param name="enemyBullet">敵弾</param>
+	void AddPlayerBullet(PlayerBullet* playerBullet);
+
+	/// <summary>
+	/// 敵弾を追加する関数
+	/// </summary>
+	/// <param name="enemyBullet">敵弾</param>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	/// <summary>
+	/// 敵をスポーンさせる関数
+	/// </summary>
+	void SpawnEnemy();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -73,9 +95,18 @@ private: // メンバ変数
 
 	// プレイヤー
 	Player* player_ = nullptr;
+	// プレイヤー弾
+	std::list<PlayerBullet*> playerBullets_;
 
-	// 敵
-	Enemy* enemy_ = nullptr;
+	// 敵のリスト
+	std::list<Enemy*> enemies_;
+	// 敵弾
+	std::list<EnemyBullet*> enemyBullets_;
+
+	// スポーン間隔
+	static const int32_t kSpawnTime = 60;
+	// 敵のスポーンタイマー
+	int32_t spawnTimer_ = kSpawnTime;
 
 	// 天球
 	Model* modelSkyDome_ = nullptr;

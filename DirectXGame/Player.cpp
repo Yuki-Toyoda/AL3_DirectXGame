@@ -1,4 +1,5 @@
 ﻿#include "Player.h"
+#include "GameScene.h"
 
 /// <summary>
 /// コンストラクタ
@@ -12,11 +13,6 @@ Player::Player() {
 /// </summary>
 Player::~Player() {
 
-	// 弾の解放
-	for (PlayerBullet* bullet : bullets_) {
-		delete bullet;
-	}
-
 }
 
 /// <summary>
@@ -24,7 +20,8 @@ Player::~Player() {
 /// </summary>
 /// <param name="model">3Dモデル</param>
 /// <param name="textureHandle">テクスチャハンドル</param>
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+/// <param name="gameScene">ゲームシーン</param>
+void Player::Initialize(Model* model, uint32_t textureHandle, GameScene* gameScene) {
 
 	// シングルトンインスタンスを取得
 	input_ = Input::GetInstance();
@@ -44,6 +41,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// 移動ベクトルの初期化
 	move = {0.0f, 0.0f, 0.0f};
+
+	// ゲームシーンをセットする
+	SetGameScene(gameScene);
 
 }
 
@@ -101,20 +101,6 @@ void Player::Update() {
 	// 攻撃処理
 	Attack();
 
-	// 弾の更新処理
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](PlayerBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
-
 	// デバック用の値を変える
 	translation[0] = worldTransform_.translation_.x;
 	translation[1] = worldTransform_.translation_.y;
@@ -134,12 +120,6 @@ void Player::Update() {
 void Player::Draw(ViewProjection& viewProjection) {
 	// 3Dモデル描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
-	// 弾描画
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
-
 }
 
 /// <summary>
@@ -160,7 +140,8 @@ void Player::Attack() {
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		// 弾を登録する
-		bullets_.push_back(newBullet);
+		gameScene_->AddPlayerBullet(newBullet);
+
 	}
 
 }

@@ -1,29 +1,35 @@
 ﻿#include "Enemy.h"
 #include "Player.h"
+#include "GameScene.h"
 
 Enemy::Enemy() {
 
 }
 
 Enemy::~Enemy() {
-	// 弾の解放
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
+
+
 }
 
 /// <summary>
 /// 初期化処理
 /// </summary>
 /// <param name="model">3Dモデル</param>
+/// <param name="gameScene">ゲームシーン</param>
 /// <param name="position">初期座標</param>
 /// <param name="velocity">速度</param>
-void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+/// /// <param name="player">player</param>
+void Enemy::Initialize(
+    Model* model, GameScene* gameScene, const Vector3& position, const Vector3& velocity,
+    Player* player) {
 
 	// NULLポインタチェック
 	assert(model);
 	// モデル読み込み
 	model_ = model;
+
+	assert(player);
+	player_ = player;
 
 	// ポジション初期化
 	worldTransform_.Initialize();
@@ -32,11 +38,17 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	// テクスチャの読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
 
+	// デスフラグ
+	isDead_ = false;
+
 	// 引数で受け取った速度をメンバ変数に代入する
 	velocity_ = velocity;
 
 	// 射撃タイマー初期化
 	FireTimerInitialize();
+
+	// ゲームシーンをセットする
+	SetGameScene(gameScene);
 
 }
 
@@ -62,22 +74,12 @@ void Enemy::Update() {
 		break;
 	}
 
-	// 弾の更新処理
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
-
 	// 行列の更新処理
 	worldTransform_.UpdateMatrix();
+
+	if (worldTransform_.translation_.y >= 30.0f) {
+		isDead_ = true; 
+	}
 }
 
 /// <summary>
@@ -86,14 +88,10 @@ void Enemy::Update() {
 /// <param name="viewProjection">ビュープロジェクション</param>
 void Enemy::Draw(const ViewProjection& viewProjection) {
 
-	// モデルの描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
-	// 弾描画
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
+	if (!isDead_) {
+		// モデルの描画
+		model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	}
-
 }
 
 /// <summary>
@@ -119,7 +117,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾速
-	const float kBulletSpeed = 0.5f;
+	const float kBulletSpeed = 0.25f;
 
 	Vector3 playerTranslation = player_->GetWorldPosition();
 	Vector3 enemyTranslation = GetWorldPosition();
@@ -136,7 +134,7 @@ void Enemy::Fire() {
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
 	// 弾を登録する
-	bullets_.push_back(newBullet);
+	gameScene_->AddEnemyBullet(newBullet);
 
 }
 
@@ -153,15 +151,14 @@ void Enemy::FireTimerInitialize() {
 /// </summary>
 void Enemy::OnCollision() {
 
+	isDead_ = true;
+
 }
 
 /// <summary>
 /// 接近状態の更新処理
 /// </summary>
 void Enemy::ApproachUpdate() {
-
-	// ベクトルの初期化
-	velocity_ = {0.0f, 0.0f, -0.00f};
 
 	// 敵の座標を移動させる
 	worldTransform_.translation_ = MyMath::Add(worldTransform_.translation_, velocity_);
