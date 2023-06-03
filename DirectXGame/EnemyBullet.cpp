@@ -30,7 +30,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 	velocity_ = velocity;
 
 	// テクスチャの読み込み
-	textureHandle_ = TextureManager::Load("white1x1.png");
+	textureHandle_ = TextureManager::Load("uvChecker.png");
 }
 
 /// <summary>
@@ -57,6 +57,7 @@ void EnemyBullet::Draw(const ViewProjection& viewProjection) {
 
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	
 }
 
 /// <summary>
