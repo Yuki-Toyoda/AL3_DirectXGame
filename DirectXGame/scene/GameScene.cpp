@@ -142,6 +142,15 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// デスフラグの立ったプレイヤー弾を削除
+	playerBullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
 	// 当たり判定の検証
 	CheckAllCollisions();
 
@@ -262,7 +271,7 @@ void GameScene::CheckAllCollisions() {
 		distance = float(std::pow((posB.x - posA.x), 2) + std::pow((posB.y - posA.y), 2) + std::pow((posB.z - posA.z), 2));
 
 		// 球の判定同士が衝突していれば
-		if (distance <= std::pow((10 + 10), 2)) {
+		if (distance <= 10 + 10) {
 			// プレイヤーの衝突関数を呼び出す
 			player_->OnCollision();
 			// 敵の衝突関数を呼び出す
@@ -287,7 +296,7 @@ void GameScene::CheckAllCollisions() {
 			distance = float(std::pow((posB.x - posA.x), 2) + std::pow((posB.y - posA.y), 2) + std::pow((posB.z - posA.z), 2));
 
 			// 球の判定同士が衝突していれば
-			if (distance <= std::pow((10 + 10), 2)) {
+			if (distance <= 10 + 10) {
 				// プレイヤーの衝突関数を呼び出す
 				enemy->OnCollision();
 				// 敵の衝突関数を呼び出す
