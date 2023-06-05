@@ -176,7 +176,7 @@ void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
 
 		// 弾速
-		const float kBulletSpeed = 0.25f;
+		const float kBulletSpeed = 0.5f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
 		// 速度ベクトルを自機の向きに合わせて回転させる
