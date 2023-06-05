@@ -91,7 +91,7 @@ void GameScene::Update() {
 	railCamera->Update();
 
 	// プレイヤーの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// プレイヤー弾の更新処理
 	for (PlayerBullet* bullet : playerBullets_) {
@@ -239,6 +239,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	// プレイヤー関係のスプライト
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

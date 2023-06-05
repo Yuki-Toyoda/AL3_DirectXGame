@@ -3,6 +3,7 @@
 #include <list>
 #include "MyMath.h"
 #include "Model.h"
+#include "Sprite.h"
 #include "WorldTransform.h"
 #include "Input.h"
 #include "ImGuiManager.h"
@@ -30,12 +31,18 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	/// <param name="viewProjection">ビュープロジェクション</param>
+	void Update(ViewProjection& viewProjection);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
+
+	/// <summary>
+	/// UIの描画処理
+	/// </summary>
+	void DrawUI();
 
 	/// <summary>
 	/// プレイヤーの攻撃処理
@@ -72,10 +79,14 @@ private:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+	// 3Dレティクル用ワールド変換データ
+	WorldTransform worldTransform3DReticle_;
+
+	// スプライト
+	Sprite* sprite2DReticle_ = nullptr;
 
 	// モデル
 	Model* model_ = nullptr;
-
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 

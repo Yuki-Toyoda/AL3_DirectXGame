@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <cmath>
 #include <ctime>
+#include <cassert>
 #include <Vector3.h>
 #include <Matrix4x4.h>
 
@@ -37,6 +38,22 @@ public:
 	/// <param name="v2">ベクトル2</param>
 	/// <returns>加算されたベクトルの値</returns>
 	static Vector3 Add(Vector3 v1, const Vector3 v2);
+
+	/// <summary>
+	/// 3次元ベクトルを引数で指定した値でスカラー倍する関数
+	/// </summary>
+	/// <param name="scalar">値</param>
+	/// <param name="v">ベクトル</param>
+	/// <returns>スカラー倍されたベクトル</returns>
+	static Vector3 Multiply(float scalar, const Vector3& v);
+
+	/// <summary>
+	/// 行列を3次元ベクトルに変換する関数
+	/// </summary>
+	/// <param name="vector">3次元ベクトル</param>
+	/// <param name="matrix">行列</param>
+	/// <returns></returns>
+	static Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
 	/// <summary>
 	/// 平行移動を無視してスケーリングと回転のみを適用する関数
@@ -161,5 +178,43 @@ public:
 
 		return result;
 	}
+
+	/// <summary>
+	/// 正射影行列作成関数
+	/// </summary>
+	/// <param name="left"></param>
+	/// <param name="top"></param>
+	/// <param name="right"></param>
+	/// <param name="bottom"></param>
+	/// <param name="nearClip"></param>
+	/// <param name="farClip"></param>
+	/// <returns>正射影行列</returns>
+	static Matrix4x4 MakeOrthGraphicMatrix(
+	    float left, float top, float right, float bottom, float nearClip, float farClip);
+
+	/// <summary>
+	/// 透視射影行列作成関数
+	/// </summary>
+	/// <param name="fovY">画角</param>
+	/// <param name="aspectRatio">アスペクト比</param>
+	/// <param name="nearClip">近平面への距離</param>
+	/// <param name="farClip">遠平面への距離</param>
+	/// <returns>透視射影行列</returns>
+	static Matrix4x4
+	    MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+
+	/// <summary>
+	/// ビューポート変換行列
+	/// </summary>
+	/// <param name="left"></param>
+	/// <param name="top"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <param name="minDepth"></param>
+	/// <param name="maxDepth"></param>
+	/// <returns>ビューポート行列</returns>
+	static Matrix4x4 MakeViewPortMatrix(
+	    float left, float top, float width, float height, float minDepth, float maxDepth);
+
 
 };

@@ -52,6 +52,55 @@ Vector3 MyMath::Add(Vector3 v1, Vector3 v2) {
 }
 
 /// <summary>
+/// 3次元ベクトルを引数で指定した値でスカラー倍する関数
+/// </summary>
+/// <param name="scalar">値</param>
+/// <param name="v">ベクトル</param>
+/// <returns>スカラー倍されたベクトル</returns>
+Vector3 MyMath::Multiply(float scalar, const Vector3& v) {
+
+	// 結果格納用
+	Vector3 result;
+
+	// 計算処理
+	result.x = v.x * scalar;
+	result.y = v.y * scalar;
+	result.z = v.z * scalar;
+
+	return result;
+}
+
+/// <summary>
+/// 行列を3次元ベクトルに変換する関数
+/// </summary>
+/// <param name="vector">3次元ベクトル</param>
+/// <param name="matrix">行列</param>
+/// <returns></returns>
+Vector3 MyMath::Transform(const Vector3& vector, const Matrix4x4& matrix) {
+
+	// 結果格納用
+	Vector3 result;
+
+	// 生成処理
+	result.x = (vector.x * matrix.m[0][0]) + (vector.y * matrix.m[1][0]) +
+	           (vector.z * matrix.m[2][0]) + (1.0f * matrix.m[3][0]);
+	result.y = (vector.x * matrix.m[0][1]) + (vector.y * matrix.m[1][1]) +
+	           (vector.z * matrix.m[2][1]) + (1.0f * matrix.m[3][1]);
+	result.z = (vector.x * matrix.m[0][2]) + (vector.y * matrix.m[1][2]) +
+	           (vector.z * matrix.m[2][2]) + (1.0f * matrix.m[3][2]);
+	float w = (vector.x * matrix.m[0][3]) + (vector.y * matrix.m[1][3]) +
+	          (vector.z * matrix.m[2][3]) + (1.0f * matrix.m[3][3]);
+
+	assert(w != 0.0f);
+
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+
+	return result;
+}
+
+/// <summary>
 /// 平行移動を無視してスケーリングと回転のみを適用する関数
 /// </summary>
 /// <param name="v">3次元ベクトル</param>
@@ -508,6 +557,121 @@ Matrix4x4 MyMath::Vector3MakeAffineMatrix(Vector3 scale, Vector3 rotate, Vector3
 	result.m[3][0] = T.m[3][0];
 	result.m[3][1] = T.m[3][1];
 	result.m[3][2] = T.m[3][2];
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+/// <summary>
+/// 正射影行列作成関数
+/// </summary>
+/// <param name="left"></param>
+/// <param name="top"></param>
+/// <param name="right"></param>
+/// <param name="bottom"></param>
+/// <param name="nearClip"></param>
+/// <param name="farClip"></param>
+/// <returns>正射影行列</returns>
+Matrix4x4 MyMath::MakeOrthGraphicMatrix(
+    float left, float top, float right, float bottom, float nearClip, float farClip) {
+
+	// 結果格納用
+	Matrix4x4 result;
+
+	result.m[0][0] = 2 / (right - left);
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = 2 / (top - bottom);
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = 1 / (farClip - nearClip);
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = (left + right) / (left - right);
+	result.m[3][1] = (top + bottom) / (bottom - top);
+	result.m[3][2] = nearClip / (nearClip - farClip);
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+/// <summary>
+/// 透視射影行列作成関数
+/// </summary>
+/// <param name="fovY">画角</param>
+/// <param name="aspectRatio">アスペクト比</param>
+/// <param name="nearClip">近平面への距離</param>
+/// <param name="farClip">遠平面への距離</param>
+/// <returns>透視射影行列</returns>
+Matrix4x4
+    MyMath::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+
+	// 結果格納用
+	Matrix4x4 result;
+
+	result.m[0][0] = (1 / aspectRatio) * (1 / tanf(fovY / 2));
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = (1 / tanf(fovY / 2));
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = farClip / (farClip - nearClip);
+	result.m[2][3] = 1.0f;
+
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = -(nearClip * farClip) / (farClip - nearClip);
+	result.m[3][3] = 0.0f;
+
+	return result;
+}
+
+/// <summary>
+/// ビューポート変換行列
+/// </summary>
+/// <param name="left"></param>
+/// <param name="top"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="minDepth"></param>
+/// <param name="maxDepth"></param>
+/// <returns>ビューポート行列</returns>
+Matrix4x4 MyMath::MakeViewPortMatrix(
+    float left, float top, float width, float height, float minDepth, float maxDepth) {
+
+	// 結果格納用
+	Matrix4x4 result;
+
+	result.m[0][0] = width / 2;
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = -height / 2;
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = maxDepth - minDepth;
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = left + (width / 2);
+	result.m[3][1] = top + (height / 2);
+	result.m[3][2] = minDepth;
 	result.m[3][3] = 1.0f;
 
 	return result;
