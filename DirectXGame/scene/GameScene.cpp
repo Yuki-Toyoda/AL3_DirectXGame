@@ -100,10 +100,7 @@ void GameScene::Update() {
 
 	// 敵の更新
 	for (Enemy* enemy : enemies_) {
-		// 敵が死亡していない状態なら
-		if (!enemy->GetIsDead()) {
-			enemy->Update();
-		}
+		enemy->Update();
 	}
 
 	// 敵のスポーン処理
