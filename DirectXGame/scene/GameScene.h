@@ -104,7 +104,7 @@ private: // メンバ変数
 	std::list<EnemyBullet*> enemyBullets_;
 
 	// スポーン間隔
-	static const int32_t kSpawnTime = 60;
+	static const int32_t kSpawnTime = 70;
 	// 敵のスポーンタイマー
 	int32_t spawnTimer_ = kSpawnTime;
 

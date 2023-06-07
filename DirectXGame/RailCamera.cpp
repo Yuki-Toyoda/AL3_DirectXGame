@@ -23,7 +23,7 @@ void RailCamera::Initialize(Vector3 translation_, Vector3 rotate) {
 void RailCamera::Update() {
 
 	// ワールド座標を加算する
-	worldTransform_.translation_.z += 0.001f;
+	worldTransform_.translation_.z += 0.01f;
 
 	// スケール、回転、平行移動を合成して行列を計算する
 	worldTransform_.matWorld_ = MyMath::Vector3MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -33,7 +33,7 @@ void RailCamera::Update() {
 	// デバックウィンドウ表示
 	ImGui::Begin("Camera");
 
-	ImGui::SliderFloat3("translate", &worldTransform_.translation_.x, -50.0f, 50.0f);
+	ImGui::SliderFloat3("translate", &worldTransform_.translation_.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("rotation", &worldTransform_.rotation_.x, 0.0f, 6.0f);
 
 	ImGui::End();

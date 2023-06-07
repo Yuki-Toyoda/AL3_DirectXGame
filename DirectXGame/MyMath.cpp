@@ -138,7 +138,7 @@ float MyMath::Length(const Vector3& v) {
 Vector3 MyMath::Normalize(const Vector3& v) {
 
 	// 正規化するベクトルの長さを求める
-	float length = sqrtf(Length(v));
+	float length = Length(v);
 	// 結果格納用
 	Vector3 result;
 

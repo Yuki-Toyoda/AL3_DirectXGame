@@ -117,7 +117,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾速
-	const float kBulletSpeed = 0.25f;
+	const float kBulletSpeed = 0.75f;
 
 	Vector3 playerTranslation = player_->GetWorldPosition();
 	Vector3 enemyTranslation = GetWorldPosition();
@@ -135,6 +135,8 @@ void Enemy::Fire() {
 
 	// 弾を登録する
 	gameScene_->AddEnemyBullet(newBullet);
+
+	fireTimer = kFireInterval;
 
 }
 
@@ -174,8 +176,7 @@ void Enemy::ApproachUpdate() {
 	if (fireTimer <= 0) {
 		// 弾を発射
 		Fire();
-		// 発射タイマー初期化
-		FireTimerInitialize();
+		fireTimer = kFireInterval;
 	}
 
 }

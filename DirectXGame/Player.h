@@ -45,6 +45,16 @@ public:
 	void DrawUI();
 
 	/// <summary>
+	/// 移動処理
+	/// </summary>
+	void Move();
+
+	/// <summary>
+	/// レティクルの移動処理
+	/// </summary>
+	void MoveReticle(ViewProjection& viewProjection);
+
+	/// <summary>
 	/// プレイヤーの攻撃処理
 	/// </summary>
 	void Attack();
@@ -100,10 +110,14 @@ private:
 	// 旋回速さ
 	const float kRotSpeed = 0.02f;
 
-	// デバッグ用
-	float translation[3] = {0.0f, 0.0f, 0.0f};
+	// 発射間隔
+	static const int kFireInterval = 10;
+	int32_t fireTimer = 0;
 
 	// ゲームシーン
 	GameScene* gameScene_ = nullptr;
+
+	// コントローラーを有効にするか
+	bool enableController;
 
 };
