@@ -23,7 +23,7 @@ void RailCamera::Initialize(Vector3 translation_, Vector3 rotate) {
 void RailCamera::Update() {
 
 	// ワールド座標を加算する
-	worldTransform_.translation_.z += 0.01f;
+	worldTransform_.translation_.z += 0.1f;
 
 	// スケール、回転、平行移動を合成して行列を計算する
 	worldTransform_.matWorld_ = MyMath::Vector3MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
