@@ -4,16 +4,42 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+
+	// 生成したものの削除
+	/*delete model_;
+	delete player_;*/
+
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	// ワールドトランスフォーム初期化
+	worldTransform_.Initialize();
+	// ビュープロジェクション初期化
+	viewProjection_.Initialize();
+
+	// モデル生成
+	model_.reset(Model::Create());
+	// プレイヤーテクスチャのロード
+	texturePlayer_ = TextureManager::Load("PLAYER.png");
+
+	// プレイヤーのインスタンス生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize(model_.get(), texturePlayer_);
+
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+	// プレイヤーの更新処理
+	player_->Update();
+
+}
 
 void GameScene::Draw() {
 
@@ -41,6 +67,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+
+	// プレイヤーの描画
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
