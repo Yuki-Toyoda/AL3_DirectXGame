@@ -23,21 +23,50 @@ void GameScene::Initialize() {
 	// ビュープロジェクション初期化
 	viewProjection_.Initialize();
 
+	// デバックカメラのインスタンス生成
+	debugCamera_ = std::make_unique<DebugCamera>(1280.0f, 720.0f);
+	// デバックカメラ無効化
+	enableDebugCamera_ = false;
+
 	// モデル生成
 	model_.reset(Model::Create());
 	// プレイヤーテクスチャのロード
 	texturePlayer_ = TextureManager::Load("PLAYER.png");
 
+	// 天球モデル生成
+	modelSkyDome_.reset(Model::CreateFromOBJ("SkyDome", true));
+
 	// プレイヤーのインスタンス生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize(model_.get(), texturePlayer_);
+
+	// 天球のインスタンス生成
+	skyDome_ = std::make_unique<SkyDome>();
+	skyDome_->Initialize(modelSkyDome_.get());
+	
 
 }
 
 void GameScene::Update() {
 
-	// プレイヤーの更新処理
-	player_->Update();
+	// 更新処理
+	player_->Update(); // プレイヤー
+	skyDome_->Update(); // 天球
+
+	// デバックのみ
+	#ifdef _DEBUG
+
+	// デバックカメラ有効時
+	if (enableDebugCamera_) {
+		debugCamera_->Update(); // デバックカメラ
+	}
+
+#endif // _DEBUG
+
+	// デバックカメラの有効化と無効化
+	ImGui::Begin("camera");
+	ImGui::Checkbox("EnableCamera", &enableDebugCamera_);
+	ImGui::End();
 
 }
 
@@ -68,8 +97,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// プレイヤーの描画
-	player_->Draw(viewProjection_);
+	// 描画
+	player_->Draw(viewProjection_); // プレイヤー
+	skyDome_->Draw(viewProjection_); // 天球
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

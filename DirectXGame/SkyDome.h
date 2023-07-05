@@ -2,28 +2,27 @@
 #include <cassert>
 #include "Model.h"
 #include "WorldTransform.h"
-#include "ViewProjection.h"
 
 /// <summary>
-/// プレイヤークラス
+/// 天球クラス
 /// </summary>
-class Player {
+class SkyDome {
+
 public: // メンバ関数
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
 	/// <param name="model">3Dモデル</param>
-	/// <param name="textureHandle">テクスチャ</param>
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model);
 
 	/// <summary>
-	/// 更新処理
+	/// 更新関数
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// 描画処理
+	/// 描画関数
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection viewProjection);
@@ -35,7 +34,5 @@ private: // メンバ変数
 
 	// モデル
 	Model* model_ = nullptr;
-	// テクスチャ
-	uint32_t textureHandle_ = 0u;
 
 };
