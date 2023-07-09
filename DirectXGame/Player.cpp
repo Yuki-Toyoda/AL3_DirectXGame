@@ -44,7 +44,7 @@ void Player::Update() {
 		worldTransform_.translation_ = worldTransform_.translation_ + move;
 
 		// 移動方向にオブジェクトの向きを合わせる
-		worldTransform_.rotation_.y = -(atan2(move.z, move.x));
+		worldTransform_.rotation_.y = atan2(move.x, move.z);
 
 		#ifdef _DEBUG
 
