@@ -24,9 +24,14 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// デバックカメラのインスタンス生成
-	debugCamera_ = std::make_unique<DebugCamera>(1280.0f, 720.0f);
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 	// デバックカメラ無効化
 	enableDebugCamera_ = false;
+
+	// 追従カメラのインスタンス生成
+	followCamera_ = std::make_unique<FollowCamera>();
+	// 追従カメラ初期化
+	followCamera_->Initialize();
 
 	// モデル生成
 	model_.reset(Model::Create());
@@ -35,15 +40,25 @@ void GameScene::Initialize() {
 
 	// 天球モデル生成
 	modelSkyDome_.reset(Model::CreateFromOBJ("SkyDome", true));
+	// 地面モデル生成
+	modelGruond_.reset(Model::CreateFromOBJ("Ground", true));
 
 	// プレイヤーのインスタンス生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize(model_.get(), texturePlayer_);
 
+	// 追従カメラの追従対象をプレイヤーに設定
+	followCamera_->SetTarget(player_->GetWorldTransform());
+
+	// プレイヤーにビュープロジェクションをセット
+	player_->SetViewProjection(followCamera_->GetViewProjectionAdress());
+
 	// 天球のインスタンス生成
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Initialize(modelSkyDome_.get());
-	
+	// 地面のインスタンス生成
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize(modelGruond_.get());
 
 }
 
@@ -52,21 +67,39 @@ void GameScene::Update() {
 	// 更新処理
 	player_->Update(); // プレイヤー
 	skyDome_->Update(); // 天球
-
-	// デバックのみ
-	#ifdef _DEBUG
+	ground_->Update(); // 地面
 
 	// デバックカメラ有効時
 	if (enableDebugCamera_) {
 		debugCamera_->Update(); // デバックカメラ
+
+		// ビュープロジェクションをデバックカメラのものに設定する
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+
+		// 行列を定数バッファに転送
+		viewProjection_.TransferMatrix();
+
+	} else {
+		// viewProjection行列の更新と転送
+		followCamera_->Update();
+		// ビュープロジェクションを追従カメラのものに設定する
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+
+		// 行列を定数バッファに転送
+		viewProjection_.TransferMatrix();
 	}
 
-#endif // _DEBUG
+	// デバックのみ
+	#ifdef _DEBUG
 
 	// デバックカメラの有効化と無効化
 	ImGui::Begin("camera");
 	ImGui::Checkbox("EnableCamera", &enableDebugCamera_);
 	ImGui::End();
+
+#endif // _DEBUG
 
 }
 
@@ -100,6 +133,7 @@ void GameScene::Draw() {
 	// 描画
 	player_->Draw(viewProjection_); // プレイヤー
 	skyDome_->Draw(viewProjection_); // 天球
+	ground_->Draw(viewProjection_); // 地面
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

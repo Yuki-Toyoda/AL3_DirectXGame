@@ -1,7 +1,6 @@
 #pragma once
-/// <summary>
-/// 4x4行列
-/// </summary>
+
+// 4x4行列
 struct Matrix4x4 final {
 	float m[4][4];
 };

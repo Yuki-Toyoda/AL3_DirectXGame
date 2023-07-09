@@ -1,8 +1,6 @@
 #pragma once
 
-/// <summary>
-/// 4次元ベクトル
-/// </summary>
+// 4次元ベクトル
 struct Vector4 final {
 	float x;
 	float y;

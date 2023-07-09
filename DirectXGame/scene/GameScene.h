@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <imgui.h>
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -13,8 +12,14 @@
 #include "WorldTransform.h"
 
 #include "DebugCamera.h"
+#include "FollowCamera.h"
 #include "Player.h"
 #include "SkyDome.h"
+#include "Ground.h"
+
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
 
 /// <summary>
 /// ゲームシーン
@@ -66,6 +71,9 @@ private: // メンバ変数
 	// デバックカメラを有効にするか
 	bool enableDebugCamera_;
 
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
+
 	// モデル
 	std::unique_ptr<Model> model_;
 	// プレイヤーテクスチャ
@@ -73,9 +81,13 @@ private: // メンバ変数
 
 	// 天球モデル
 	std::unique_ptr<Model> modelSkyDome_;
+	// 地面モデル
+	std::unique_ptr<Model> modelGruond_;
 
 	// プレイヤークラス
 	std::unique_ptr<Player> player_;
 	// 天球クラス
 	std::unique_ptr<SkyDome> skyDome_;
+	// 地面クラス
+	std::unique_ptr<Ground> ground_;
 };
