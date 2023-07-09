@@ -35,6 +35,12 @@ void GameScene::Initialize() {
 
 	// モデル生成
 	model_.reset(Model::Create());
+	// プレイヤーモデル生成
+	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
+	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
+	modelFighterL_Arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
+	modelFighterR_Arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
+
 	// プレイヤーテクスチャのロード
 	texturePlayer_ = TextureManager::Load("PLAYER.png");
 
@@ -45,7 +51,9 @@ void GameScene::Initialize() {
 
 	// プレイヤーのインスタンス生成
 	player_ = std::make_unique<Player>();
-	player_->Initialize(model_.get(), texturePlayer_);
+	player_->Initialize(
+	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_Arm_.get(),
+	    modelFighterR_Arm_.get());
 
 	// 追従カメラの追従対象をプレイヤーに設定
 	followCamera_->SetTarget(player_->GetWorldTransform());

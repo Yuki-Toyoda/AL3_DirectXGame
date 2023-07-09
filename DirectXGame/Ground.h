@@ -33,6 +33,6 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 
 	// モデル
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_;
 
 };

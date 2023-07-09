@@ -1,18 +1,34 @@
 #include "Player.h"
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
+
 	// NULLチェック
-	assert(model);
+	assert(modelBody);
+	assert(modelHead);
+	assert(modelL_arm);
+	assert(modelR_arm);
 
 	// 入力情報取得
 	input_ = Input::GetInstance();
 
 	// ワールドトランスフォーム初期化
 	worldTransform_.Initialize();
+	worldTransformBody_.Initialize();
+	worldTransformHead_.Initialize();
+	worldTransformL_Arm_.Initialize();
+	worldTransformR_Arm_.Initialize();
 
-	// 引数の値をメンバ変数に代入する
-	model_ = model;
-	textureHandle_ = textureHandle;
+	// 引数の値をメンバ変数に代入
+	modelFighterBody_.reset(modelBody);
+	modelFighterHead_.reset(modelHead);
+	modelFighterL_Arm_.reset(modelL_arm);
+	modelFighterR_Arm_.reset(modelR_arm);
+
+	// 浮遊ギミック初期化
+	InitializeFloatingGimmick();
+
+	// 体をプレイヤー座標に追従させる
+	
 }
 
 void Player::Update() {
@@ -42,9 +58,11 @@ void Player::Update() {
 
 		// 移動
 		worldTransform_.translation_ = worldTransform_.translation_ + move;
+		worldTransformBody_.translation_ = worldTransformBody_.translation_ + move;
 
 		// 移動方向にオブジェクトの向きを合わせる
 		worldTransform_.rotation_.y = -(atan2(move.z, move.x));
+		worldTransformBody_.rotation_.y = atan2(move.z, move.x);
 
 		#ifdef _DEBUG
 
@@ -55,23 +73,59 @@ void Player::Update() {
 
 		// 移動ベクトルのデバック表示
 		ImGui::Begin("translation");
-		ImGui::DragFloat3("move", &worldTransform_.translation_.x, 0.05f);
+		ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 0.05f);
+		ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.05f);
+		ImGui::DragFloat3("Bodytranslation", &worldTransformBody_.translation_.x, 0.05f);
+		ImGui::DragFloat3("Bodyrotation", &worldTransformBody_.rotation_.x, 0.05f);
 		ImGui::End();
 
 #endif // _DEBUG
 
 	}
 
-	// 行列を更新
-	worldTransform_.matWorld_ = MyMath::MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	// 浮遊ギミック更新
+	UpdateFloatingGimmick();
 
-	// 行列を定数バッファに転送する
-	worldTransform_.TransferMatrix();
+	// 行列を更新
+	worldTransform_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
+	worldTransformL_Arm_.UpdateMatrix();
+	worldTransformR_Arm_.UpdateMatrix();
 
 }
 
 void Player::Draw(ViewProjection viewProjection) {
 	// 描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	modelFighterBody_->Draw(worldTransformBody_, viewProjection); // 体
+	modelFighterHead_->Draw(worldTransformHead_, viewProjection); // 頭
+	modelFighterL_Arm_->Draw(worldTransformL_Arm_, viewProjection); // 左腕
+	modelFighterR_Arm_->Draw(worldTransformR_Arm_, viewProjection); // 右腕
 }
+
+void Player::InitializeFloatingGimmick() {
+
+	// 変数初期化
+	floatingParameter_ = 0.0f;
+
+}
+
+void Player::UpdateFloatingGimmick() {
+
+	// 浮遊移動のサイクル
+	const uint16_t cycle = 60;
+	// 1フレームごとの加算値
+	const float step = (float)(2.0f * std::numbers::pi / cycle);
+
+	// パラメータを1ステップ分加算する
+	floatingParameter_ += step;
+	// 2πを超えたら0に戻す
+	floatingParameter_ = (float)(std::fmod(floatingParameter_, 2.0f * std::numbers::pi));
+
+	// 浮遊の振幅<m>
+	const float floatingAmpritude = 0.01f;
+	// 浮遊を座標に反映させる
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmpritude;
+
+}
+
