@@ -28,7 +28,15 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	InitializeFloatingGimmick();
 
 	// 体をプレイヤー座標に追従させる
-	
+	worldTransformBody_.parent_ = &worldTransform_;
+	worldTransformHead_.translation_.y += 1.5f;
+	worldTransformHead_.parent_ = &worldTransformBody_;
+	worldTransformL_Arm_.translation_.x -= 0.35f;
+	worldTransformL_Arm_.translation_.y += 1.25f;
+	worldTransformL_Arm_.parent_ = &worldTransformBody_;
+	worldTransformR_Arm_.translation_.x += 0.35f;
+	worldTransformR_Arm_.translation_.y += 1.25f;
+	worldTransformR_Arm_.parent_ = &worldTransformBody_;
 }
 
 void Player::Update() {
@@ -58,11 +66,9 @@ void Player::Update() {
 
 		// 移動
 		worldTransform_.translation_ = worldTransform_.translation_ + move;
-		worldTransformBody_.translation_ = worldTransformBody_.translation_ + move;
 
 		// 移動方向にオブジェクトの向きを合わせる
-		worldTransform_.rotation_.y = -(atan2(move.z, move.x));
-		worldTransformBody_.rotation_.y = atan2(move.z, move.x);
+		worldTransform_.rotation_.y = atan2(move.x, move.z);
 
 		#ifdef _DEBUG
 
