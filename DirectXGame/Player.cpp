@@ -19,10 +19,10 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	worldTransformR_Arm_.Initialize();
 
 	// 引数の値をメンバ変数に代入
-	modelFighterBody_.reset(modelBody);
-	modelFighterHead_.reset(modelHead);
-	modelFighterL_Arm_.reset(modelL_arm);
-	modelFighterR_Arm_.reset(modelR_arm);
+	modelFighterBody_ = (modelBody);
+	modelFighterHead_ = (modelHead);
+	modelFighterL_Arm_ = (modelL_arm);
+	modelFighterR_Arm_ = (modelR_arm);
 
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();

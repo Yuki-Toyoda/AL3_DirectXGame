@@ -6,10 +6,6 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
-	// 生成したものの削除
-	/*delete model_;
-	delete player_;*/
-
 }
 
 void GameScene::Initialize() {
@@ -33,16 +29,11 @@ void GameScene::Initialize() {
 	// 追従カメラ初期化
 	followCamera_->Initialize();
 
-	// モデル生成
-	model_.reset(Model::Create());
 	// プレイヤーモデル生成
 	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
 	modelFighterL_Arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_Arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
-
-	// プレイヤーテクスチャのロード
-	texturePlayer_ = TextureManager::Load("PLAYER.png");
 
 	// 天球モデル生成
 	modelSkyDome_.reset(Model::CreateFromOBJ("SkyDome", true));

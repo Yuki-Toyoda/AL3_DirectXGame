@@ -75,10 +75,10 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 
 	// プレイヤーモデル
-	std::unique_ptr<Model> modelFighterBody_;  // 体
-	std::unique_ptr<Model> modelFighterHead_;  // 頭
-	std::unique_ptr<Model> modelFighterL_Arm_; // 左腕
-	std::unique_ptr<Model> modelFighterR_Arm_; // 右腕
+	Model* modelFighterBody_ = nullptr;  // 体
+	Model* modelFighterHead_ = nullptr; // 頭
+	Model* modelFighterL_Arm_ = nullptr; // 左腕
+	Model* modelFighterR_Arm_ = nullptr; // 右腕
 	// モデルトランスフォーム
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;

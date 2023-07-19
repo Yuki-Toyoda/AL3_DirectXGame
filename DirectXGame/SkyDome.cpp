@@ -6,7 +6,7 @@ void SkyDome::Initialize(Model* model) {
 	assert(model);
 
 	// 引数の値をメンバ変数に代入
-	model_.reset(model);
+	model_ = (model);
 
 	// ワールドトランスフォーム初期化
 	worldTransform_.Initialize();

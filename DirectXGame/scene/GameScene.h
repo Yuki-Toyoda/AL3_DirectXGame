@@ -74,15 +74,11 @@ private: // メンバ変数
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
-	// モデル
-	std::unique_ptr<Model> model_;
 	// プレイヤーモデル
 	std::unique_ptr<Model> modelFighterBody_; // 体
 	std::unique_ptr<Model> modelFighterHead_; // 頭
 	std::unique_ptr<Model> modelFighterL_Arm_; // 左腕
 	std::unique_ptr<Model> modelFighterR_Arm_; // 右腕
-	// プレイヤーテクスチャ
-	uint32_t texturePlayer_ = 0;
 
 	// 天球モデル
 	std::unique_ptr<Model> modelSkyDome_;
