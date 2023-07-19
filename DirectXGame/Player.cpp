@@ -26,6 +26,8 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();
+	// 腕振りギミック初期化
+	InitializeArmSwingGimmick();
 
 	// 体をプレイヤー座標に追従させる
 	worldTransformBody_.parent_ = &worldTransform_;
@@ -79,10 +81,13 @@ void Player::Update() {
 
 		// 移動ベクトルのデバック表示
 		ImGui::Begin("translation");
-		ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 0.05f);
+		ImGui::SliderFloat3("translation", &worldTransform_.translation_.x, -30.0f, 30.0f);
 		ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.05f);
 		ImGui::DragFloat3("Bodytranslation", &worldTransformBody_.translation_.x, 0.05f);
 		ImGui::DragFloat3("Bodyrotation", &worldTransformBody_.rotation_.x, 0.05f);
+		ImGui::SliderInt("floatingCycle", reinterpret_cast<int*>(&floatingCycle_), 10, 240);
+		ImGui::SliderFloat("floatingAmpritude", &floatingAmpritude_, 0.005f, 1.0f);
+		ImGui::SliderInt("armSwingCycle", reinterpret_cast<int*>(&armSwingCycle_), 10, 240);
 		ImGui::End();
 
 #endif // _DEBUG
@@ -91,6 +96,8 @@ void Player::Update() {
 
 	// 浮遊ギミック更新
 	UpdateFloatingGimmick();
+	// 腕振りギミック更新
+	UpdateArmSwingGimmick();
 
 	// 行列を更新
 	worldTransform_.UpdateMatrix();
@@ -111,6 +118,10 @@ void Player::Draw(ViewProjection viewProjection) {
 
 void Player::InitializeFloatingGimmick() {
 
+	// 浮遊移動サイクル
+	floatingCycle_ = 60;
+	// 浮遊の振幅
+	floatingAmpritude_ = 0.01f;
 	// 変数初期化
 	floatingParameter_ = 0.0f;
 
@@ -118,20 +129,39 @@ void Player::InitializeFloatingGimmick() {
 
 void Player::UpdateFloatingGimmick() {
 
-	// 浮遊移動のサイクル
-	const uint16_t cycle = 60;
 	// 1フレームごとの加算値
-	const float step = (float)(2.0f * std::numbers::pi / cycle);
+	const float step = (float)(2.0f * std::numbers::pi / floatingCycle_);
 
 	// パラメータを1ステップ分加算する
 	floatingParameter_ += step;
 	// 2πを超えたら0に戻す
 	floatingParameter_ = (float)(std::fmod(floatingParameter_, 2.0f * std::numbers::pi));
 
-	// 浮遊の振幅<m>
-	const float floatingAmpritude = 0.01f;
 	// 浮遊を座標に反映させる
-	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmpritude;
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmpritude_;
+
+}
+
+void Player::InitializeArmSwingGimmick() {
+	// 腕振りサイクル
+	armSwingCycle_ = 60;
+	// 腕振りギミック用変数
+	armSwingParameter_ = 0.0f;
+}
+
+void Player::UpdateArmSwingGimmick() {
+
+	// 1フレームごとの加算値
+	const float step = (float)(2.0f * std::numbers::pi / armSwingCycle_);
+
+	// パラメータを1ステップ分加算する
+	armSwingParameter_ += step;
+	// 2πを超えたら0に戻す
+	armSwingParameter_ = (float)(std::fmod(armSwingParameter_, 2.0f * std::numbers::pi));
+
+	// 浮遊を座標に反映させる
+	worldTransformL_Arm_.rotation_.x = std::cos(armSwingParameter_) / 2.0f;
+	worldTransformR_Arm_.rotation_.x = std::cos(armSwingParameter_) / 2.0f;
 
 }
 

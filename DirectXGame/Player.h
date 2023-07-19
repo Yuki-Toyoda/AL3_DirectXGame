@@ -66,6 +66,16 @@ public: // メンバ関数
 	/// </summary>
 	void UpdateFloatingGimmick();
 
+	/// <summary>
+	/// 腕振りギミック初期化
+	/// </summary>
+	void InitializeArmSwingGimmick();
+
+	/// <summary>
+	/// 腕振りギミック更新処理
+	/// </summary>
+	void UpdateArmSwingGimmick();
+
 private: // メンバ変数
 
 	// 入力情報
@@ -91,7 +101,16 @@ private: // メンバ変数
 	// カメラのビュープロジェクションを格納する変数
 	const ViewProjection* viewProjection_ = nullptr;
 
+	// 浮遊移動サイクル
+	uint16_t floatingCycle_ = 60;
+	// 浮遊の振幅
+	float floatingAmpritude_ = 0.01f;
 	// 浮遊ギミック用媒介変数
 	float floatingParameter_ = 0.0f;
+
+	// 腕振りサイクル
+	uint16_t armSwingCycle_ = 60;
+	// 腕振りギミック用変数
+	float armSwingParameter_ = 0.0f;
 
 };
