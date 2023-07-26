@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseCharactor.h"
 #include <cassert>
 #include <numbers>
 #include "Input.h"
@@ -15,28 +16,25 @@
 /// <summary>
 /// プレイヤークラス
 /// </summary>
-class Player {
+class Player : public BaseCharactor{
 public: // メンバ関数
 
 	/// <summary>
-	/// 初期化関数
+	/// 初期化処理
 	/// </summary>
-	/// <param name="modelBody">体モデル</param>
-	/// <param name="modelHead">頭モデル</param>
-	/// <param name="modelL_arm">左腕モデル</param>
-	/// <param name="modelR_arm">右腕モデル</param>
-	void Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm);
+	/// <param name="models">モデルデータ配列</param>
+	void Initialize(const std::vector<Model*>& models) override;
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
-	void Draw(ViewProjection viewProjection);
+	void Draw(const ViewProjection viewProjection) override;
 
 	#pragma region アクセッサ等
 
@@ -81,14 +79,6 @@ private: // メンバ変数
 	// 入力情報
 	Input* input_ = nullptr;
 
-	// ワールドトランスフォーム
-	WorldTransform worldTransform_;
-
-	// プレイヤーモデル
-	Model* modelFighterBody_ = nullptr;  // 体
-	Model* modelFighterHead_ = nullptr; // 頭
-	Model* modelFighterL_Arm_ = nullptr; // 左腕
-	Model* modelFighterR_Arm_ = nullptr; // 右腕
 	// モデルトランスフォーム
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;

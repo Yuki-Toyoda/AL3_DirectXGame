@@ -35,16 +35,35 @@ void GameScene::Initialize() {
 	modelFighterL_Arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_Arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 
+	// 敵モデル生成
+	modelEnemyBody_.reset(Model::CreateFromOBJ("Enemy_Body", true));
+	modelEnemy_L_Camera_.reset(Model::CreateFromOBJ("Enemy_L_Camera", true));
+	modelEnemy_R_Camera_.reset(Model::CreateFromOBJ("Enemy_R_Camera", true));
+
 	// 天球モデル生成
 	modelSkyDome_.reset(Model::CreateFromOBJ("SkyDome", true));
 	// 地面モデル生成
 	modelGruond_.reset(Model::CreateFromOBJ("Ground", true));
 
+	// プレイヤーのモデルリストを作成
+	std::vector<Model*> playerModels = {
+	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_Arm_.get(),
+	    modelFighterR_Arm_.get()};
+
 	// プレイヤーのインスタンス生成
 	player_ = std::make_unique<Player>();
-	player_->Initialize(
-	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_Arm_.get(),
-	    modelFighterR_Arm_.get());
+	player_->Initialize(playerModels);
+
+	// 敵にモデルリストを作成
+	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemy_L_Camera_.get(), modelEnemy_R_Camera_.get()};
+
+	// 敵のインスタンス生成
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize(enemyModels);
+	enemy_->SetTranslation({0.0f, 0.0f, 10.0f});
+	enemy_->SetRotation({
+		0.0f, (float)std::numbers::pi, 0.0f
+	});
 
 	// 追従カメラの追従対象をプレイヤーに設定
 	followCamera_->SetTarget(player_->GetWorldTransform());
@@ -65,6 +84,7 @@ void GameScene::Update() {
 
 	// 更新処理
 	player_->Update(); // プレイヤー
+	enemy_->Update(); // 敵
 	skyDome_->Update(); // 天球
 	ground_->Update(); // 地面
 
@@ -131,6 +151,7 @@ void GameScene::Draw() {
 
 	// 描画
 	player_->Draw(viewProjection_); // プレイヤー
+	enemy_->Draw(viewProjection_); // 敵
 	skyDome_->Draw(viewProjection_); // 天球
 	ground_->Draw(viewProjection_); // 地面
 

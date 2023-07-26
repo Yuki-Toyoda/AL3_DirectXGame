@@ -1,12 +1,9 @@
 #include "Player.h"
 
-void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
+void Player::Initialize(const std::vector<Model*>& models) {
 
-	// NULLチェック
-	assert(modelBody);
-	assert(modelHead);
-	assert(modelL_arm);
-	assert(modelR_arm);
+	// 基底クラス初期化
+	BaseCharactor::Initialize(models);
 
 	// 入力情報取得
 	input_ = Input::GetInstance();
@@ -17,12 +14,6 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	worldTransformHead_.Initialize();
 	worldTransformL_Arm_.Initialize();
 	worldTransformR_Arm_.Initialize();
-
-	// 引数の値をメンバ変数に代入
-	modelFighterBody_ = (modelBody);
-	modelFighterHead_ = (modelHead);
-	modelFighterL_Arm_ = (modelL_arm);
-	modelFighterR_Arm_ = (modelR_arm);
 
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();
@@ -39,6 +30,7 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	worldTransformR_Arm_.translation_.x += 0.35f;
 	worldTransformR_Arm_.translation_.y += 1.25f;
 	worldTransformR_Arm_.parent_ = &worldTransformBody_;
+
 }
 
 void Player::Update() {
@@ -108,12 +100,11 @@ void Player::Update() {
 
 }
 
-void Player::Draw(ViewProjection viewProjection) {
-	// 描画
-	modelFighterBody_->Draw(worldTransformBody_, viewProjection); // 体
-	modelFighterHead_->Draw(worldTransformHead_, viewProjection); // 頭
-	modelFighterL_Arm_->Draw(worldTransformL_Arm_, viewProjection); // 左腕
-	modelFighterR_Arm_->Draw(worldTransformR_Arm_, viewProjection); // 右腕
+void Player::Draw(ViewProjection viewProjection) { 
+	models_[0]->Draw(worldTransformBody_, viewProjection);
+	models_[1]->Draw(worldTransformHead_, viewProjection);
+	models_[2]->Draw(worldTransformL_Arm_, viewProjection);
+	models_[3]->Draw(worldTransformR_Arm_, viewProjection);
 }
 
 void Player::InitializeFloatingGimmick() {

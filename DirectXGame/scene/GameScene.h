@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <numbers>
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -14,6 +15,7 @@
 #include "DebugCamera.h"
 #include "FollowCamera.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "SkyDome.h"
 #include "Ground.h"
 
@@ -85,8 +87,15 @@ private: // メンバ変数
 	// 地面モデル
 	std::unique_ptr<Model> modelGruond_;
 
+	// 敵モデル
+	std::unique_ptr<Model> modelEnemyBody_; // 本体
+	std::unique_ptr<Model> modelEnemy_L_Camera_; // 左カメラ
+	std::unique_ptr<Model> modelEnemy_R_Camera_; // 右カメラ
+
 	// プレイヤークラス
 	std::unique_ptr<Player> player_;
+	// 敵
+	std::unique_ptr<Enemy> enemy_;
 	// 天球クラス
 	std::unique_ptr<SkyDome> skyDome_;
 	// 地面クラス

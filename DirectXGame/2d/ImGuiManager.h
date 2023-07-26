@@ -9,16 +9,7 @@
 class WinApp;
 class DirectXCommon;
 
-/// <summary>
-/// ImGuiのマネージャー
-/// </summary>
 class ImGuiManager {
-private:
-	ImGuiManager() = default;
-	~ImGuiManager() = default;
-	ImGuiManager(const ImGuiManager&) = delete;
-	const ImGuiManager& operator=(const ImGuiManager&) = delete;
-
 public:
 	static ImGuiManager* GetInstance();
 	/// <summary>
@@ -47,8 +38,15 @@ public:
 	void Draw();
 
 private:
+#ifdef _DEBUG
 	// DirectX基盤インスタンス（借りてくる）
 	DirectXCommon* dxCommon_ = nullptr;
 	// SRV用ヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap_;
+#endif
+private:
+	ImGuiManager() = default;
+	~ImGuiManager() = default;
+	ImGuiManager(const ImGuiManager&) = delete;
+	const ImGuiManager& operator=(const ImGuiManager&) = delete;
 };
