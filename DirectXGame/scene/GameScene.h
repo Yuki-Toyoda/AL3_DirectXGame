@@ -82,6 +82,9 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterL_Arm_; // 左腕
 	std::unique_ptr<Model> modelFighterR_Arm_; // 右腕
 
+	// プレイヤー武器モデル
+	std::unique_ptr<Model> modelFighterWeapon_; // 武器
+
 	// 天球モデル
 	std::unique_ptr<Model> modelSkyDome_;
 	// 地面モデル

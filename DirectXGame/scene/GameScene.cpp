@@ -35,6 +35,9 @@ void GameScene::Initialize() {
 	modelFighterL_Arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_Arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 
+	// プレイヤー武器モデル生成
+	modelFighterWeapon_.reset(Model::CreateFromOBJ("Weapon", true));
+
 	// 敵モデル生成
 	modelEnemyBody_.reset(Model::CreateFromOBJ("Enemy_Body", true));
 	modelEnemy_L_Camera_.reset(Model::CreateFromOBJ("Enemy_L_Camera", true));
@@ -48,7 +51,7 @@ void GameScene::Initialize() {
 	// プレイヤーのモデルリストを作成
 	std::vector<Model*> playerModels = {
 	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_Arm_.get(),
-	    modelFighterR_Arm_.get()};
+	    modelFighterR_Arm_.get(), modelFighterWeapon_.get()};
 
 	// プレイヤーのインスタンス生成
 	player_ = std::make_unique<Player>();

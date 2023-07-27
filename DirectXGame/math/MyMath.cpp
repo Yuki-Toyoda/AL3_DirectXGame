@@ -1,5 +1,23 @@
 #include "MyMath.h"
 
+#pragma region 線形補間関数
+
+float MyMath::LinearF(float t, float start, float end, float time) { 
+	return (float)(1.0 - t / time) * start + t / time * end;
+}
+
+float MyMath::EaseInF(float t, float start, float end, float time) { 
+	float easeT = t * t;
+	return (float)(1.0 - easeT / time) * start + easeT / time * end;
+}
+
+float MyMath::EaseOutF(float t, float start, float end, float time) { 
+	float easeT = 1.0f - powf(1.0f - t / time, 3.0f);
+	return (float)(1.0 - easeT) * start + easeT * end;
+}
+
+#pragma endregion
+
 #pragma region float系演算関数
 
 /// <summary>

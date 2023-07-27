@@ -14,6 +14,38 @@ class MyMath
 {
 public:
 
+#pragma region 線形補間関数
+	/// <summary>
+	/// 線形補間関数(Normal)(float)
+	/// </summary>
+	/// <param name="t">現在のt</param>
+	/// <param name="start">開始値</param>
+	/// <param name="end">終了値</param>
+	/// <param name="time">かかる秒数</param>
+	/// <returns>イージングされた値(float)</returns>
+	static float LinearF(float t, float start, float end, float time);
+
+	/// <summary>
+	/// 線形補間関数(EaseIn)(float)
+	/// </summary>
+	/// <param name="t">現在のt</param>
+	/// <param name="start">開始値</param>
+	/// <param name="end">終了値</param>
+	/// <param name="time">かかる秒数</param>
+	/// <returns>イージングされた値(float)</returns>
+	static float EaseInF(float t, float start, float end, float time);
+
+	/// <summary>
+	/// 線形補間関数(EaseOut)(float)
+	/// </summary>
+	/// <param name="t">現在のt</param>
+	/// <param name="start">開始値</param>
+	/// <param name="end">終了値</param>
+	/// <param name="time">かかる秒数</param>
+	/// <returns>イージングされた値(float)</returns>
+	static float EaseOutF(float t, float start, float end, float time);
+#pragma endregion
+
 #pragma region float系演算関数
 
 		/// <summary>
