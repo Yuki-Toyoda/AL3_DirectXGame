@@ -148,13 +148,13 @@ private: // メンバ変数
 	float t_ = 0.0f;
 
 	// 振りかぶり秒数
-	const float swingOverTime_ = 0.5f;
+	float swingOverTime_ = 0.5f;
 	// 攻撃秒数
-	const float attackTime_ = 0.25f;
+	float attackTime_ = 0.25f;
 	// 攻撃の時どれだけ前に進むか
-	const float attackForward_ = 10.0f;
+	float attackForward_ = 10.0f;
 	// 攻撃後硬直秒数
-	const float attackWaitTime_ = 0.5f;
+	float attackWaitTime_ = 0.5f;
 
 	// 振りかぶり初期角度
 	float swingOverStartAngle_ = (float)std::numbers::pi + (float) std::numbers::pi / 2.0f;
