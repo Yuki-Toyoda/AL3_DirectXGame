@@ -146,12 +146,6 @@ void Player::BehaviorRootUpdate() {
 				behaviorRequest_ = kAttack;
 			}
 		}
-
-		// Ｘボタンが入力されたら
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
-			GlobalVariables::GetInstance()->SaveFile("Player");
-		}
-
 	}
 
 	// 武器座標をありえないほど遠くに
