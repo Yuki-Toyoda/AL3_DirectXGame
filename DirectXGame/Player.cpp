@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "GlobalVariables.h"
 
 void Player::Initialize(const std::vector<Model*>& models) {
 
@@ -37,6 +38,18 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	// 武器をプレイヤーに追従させる
 	worldTransformWeapon_.parent_ = &worldTransformR_Arm_;
 
+	// 調整項目クラスのインスタンス取得
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	// グループ名設定
+	const char* groupName = "Player";
+	// 指定した名前でグループ追加
+	globalVariables->CreateGroup(groupName);
+
+	globalVariables->SetValue(groupName, "TestInt", 90);
+
+	globalVariables->SetValue(groupName, "TestFloat", 100.0f);
+
+	globalVariables->SetValue(groupName, "TestVector3", attackStartPos_);
 }
 
 void Player::Update() {
@@ -79,22 +92,6 @@ void Player::Update() {
 	worldTransformL_Arm_.UpdateMatrix();
 	worldTransformR_Arm_.UpdateMatrix();
 	worldTransformWeapon_.UpdateMatrix();
-
-	#ifdef _DEBUG
-
-	// 移動ベクトルのデバック表示
-	ImGui::Begin("translation");
-	ImGui::SliderFloat3("translation", &worldTransform_.translation_.x, -30.0f, 30.0f);
-	ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.05f);
-	ImGui::DragFloat3("Bodytranslation", &worldTransformBody_.translation_.x, 0.05f);
-	ImGui::DragFloat3("Bodyrotation", &worldTransformBody_.rotation_.x, 0.05f);
-	ImGui::SliderInt("floatingCycle", reinterpret_cast<int*>(&floatingCycle_), 10, 240);
-	ImGui::SliderFloat("floatingAmpritude", &floatingAmpritude_, 0.005f, 1.0f);
-	ImGui::SliderInt("armSwingCycle", reinterpret_cast<int*>(&armSwingCycle_), 10, 240);
-	ImGui::SliderFloat("t", &t_, 0.0f, 3.0f);
-	ImGui::End();
-
-#endif // _DEBUG
 
 }
 
@@ -150,14 +147,11 @@ void Player::BehaviorRootUpdate() {
 			}
 		}
 
-#ifdef _DEBUG
+		// Ｘボタンが入力されたら
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+			GlobalVariables::GetInstance()->SaveFile("Player");
+		}
 
-		// 移動ベクトルのデバック表示
-		ImGui::Begin("move");
-		ImGui::DragFloat3("move", &move.x, 0.05f);
-		ImGui::End();
-
-#endif // _DEBUG
 	}
 
 	// 武器座標をありえないほど遠くに

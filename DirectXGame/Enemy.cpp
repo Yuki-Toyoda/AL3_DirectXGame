@@ -48,16 +48,6 @@ void Enemy::Update() {
 	worldTransform_R_Camera_.rotation_.y =
 	    (float)(std::fmod(worldTransform_R_Camera_.rotation_.y, 2.0f * std::numbers::pi));
 
-	#ifdef _DEBUG
-
-	// 移動ベクトルのデバック表示
-	ImGui::Begin("Enemy");
-	ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 0.05f);
-	ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.05f);
-	ImGui::End();
-
-#endif // _DEBUG
-
 	// 基底クラス更新処理
 	BaseCharactor::Update();
 
