@@ -45,11 +45,20 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	// 指定した名前でグループ追加
 	globalVariables->CreateGroup(groupName);
 
-	globalVariables->SetValue(groupName, "TestInt", 90);
+	// メンバ変数の調整項目をグローバル変数に追加
 
-	globalVariables->SetValue(groupName, "TestFloat", 100.0f);
+	globalVariables->AddItem(groupName, "Test", 0.0f);
 
-	globalVariables->SetValue(groupName, "TestVector3", attackStartPos_);
+	globalVariables->AddItem(groupName, "HeadTranslation", worldTransformHead_.translation_);
+	globalVariables->AddItem(groupName, "HeadRotation", worldTransformHead_.rotation_);
+	globalVariables->AddItem(groupName, "L_ArmTranslation", worldTransformL_Arm_.translation_);
+	globalVariables->AddItem(groupName, "R_ArmTranslation", worldTransformR_Arm_.translation_);
+	globalVariables->AddItem(groupName, "floatingCycle", floatingCycle_);
+	globalVariables->AddItem(groupName, "floatingAmpritude", floatingAmpritude_);
+	globalVariables->AddItem(groupName, "swingOverTime", swingOverTime_);
+	globalVariables->AddItem(groupName, "attackTime", attackTime_);
+	globalVariables->AddItem(groupName, "attackForward", attackForward_);
+	globalVariables->AddItem(groupName, "attackWaitTime", attackWaitTime_);
 }
 
 void Player::Update() {
@@ -78,6 +87,8 @@ void Player::Update() {
 	case Behavior::kRoot:
 		// 通常行動初期化
 		BehaviorRootUpdate();
+		// 調整項目を反映
+		ApplyGlobalVariables();
 		break;
 	case Behavior::kAttack:
 		// 攻撃行動初期化
@@ -101,6 +112,26 @@ void Player::Draw(ViewProjection viewProjection) {
 	models_[2]->Draw(worldTransformL_Arm_, viewProjection);
 	models_[3]->Draw(worldTransformR_Arm_, viewProjection);
 	models_[4]->Draw(worldTransformWeapon_, viewProjection);
+}
+
+void Player::ApplyGlobalVariables() {
+	// 調整項目クラスのインスタンス取得
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Player";
+
+	// メンバ変数の調整項目をグローバル変数に追加
+	worldTransformHead_.translation_ = globalVariables->GetVector3Value(groupName, "HeadTranslation");
+	worldTransformHead_.rotation_ = globalVariables->GetVector3Value(groupName, "HeadRotation");
+	worldTransformL_Arm_.translation_ = globalVariables->GetVector3Value(groupName, "L_ArmTranslation");
+	worldTransformR_Arm_.translation_ = globalVariables->GetVector3Value(groupName, "R_ArmTranslation");
+	floatingCycle_ = globalVariables->GetIntValue(groupName, "floatingCycle");
+	floatingAmpritude_ = globalVariables->GetFloatValue(groupName, "floatingAmpritude");
+	swingOverTime_ = globalVariables->GetFloatValue(groupName, "swingOverTime");
+	attackTime_ = globalVariables->GetFloatValue(groupName, "attackTime");
+	attackForward_ = globalVariables->GetFloatValue(groupName, "attackForward");
+	attackWaitTime_ = globalVariables->GetFloatValue(groupName, "attackWaitTime");
+
 }
 
 void Player::BehaviorRootInitialize() {

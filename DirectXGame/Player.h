@@ -56,6 +56,11 @@ public: // メンバ関数
 #pragma endregion
 
 	/// <summary>
+	/// 調整項目の適用関数
+	/// </summary>
+	void ApplyGlobalVariables();
+
+	/// <summary>
 	/// 通常時の行動初期化
 	/// </summary>
 	void BehaviorRootInitialize();
@@ -113,14 +118,14 @@ private: // メンバ変数
 	const ViewProjection* viewProjection_ = nullptr;
 
 	// 浮遊移動サイクル
-	uint16_t floatingCycle_ = 60;
+	int32_t floatingCycle_ = 60;
 	// 浮遊の振幅
 	float floatingAmpritude_ = 0.01f;
 	// 浮遊ギミック用媒介変数
 	float floatingParameter_ = 0.0f;
 
 	// 腕振りサイクル
-	uint16_t armSwingCycle_ = 60;
+	int32_t armSwingCycle_ = 60;
 	// 腕振りギミック用変数
 	float armSwingParameter_ = 0.0f;
 

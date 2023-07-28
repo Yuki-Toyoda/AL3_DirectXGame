@@ -157,6 +157,96 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 	ofs.close();
 }
 
+void GlobalVariables::LoadFiles() {
+	// 保存先ディレクトリのパスをローカル変数で宣言する
+	std::filesystem::path dir(kDirectorypath);
+
+	// ディレクトリがなければスキップする
+	if (!std::filesystem::exists(kDirectorypath)) {
+		return;
+	}
+
+	// ディレクトリ内のファイルのポインタの型を用意
+	std::filesystem::directory_iterator dir_it(kDirectorypath);
+	// ディレクトリ内の1要素を取り出し、entry変数に格納する
+	for (const std::filesystem::directory_entry& entry : dir_it) {
+		// ファイルパスを取得する
+		const std::filesystem::path& filePath = entry.path();
+		// ファイルの拡張子を取得
+		std::string extension = filePath.extension().string();
+
+		// .jsonファイル以外は処理を飛ばす
+		if (extension.compare(".json") != 0) {
+			// 処理を続ける
+			continue;
+		}
+
+		// ファイルを読み込む
+		LoadFile(filePath.stem().string());
+
+	}
+}
+
+void GlobalVariables::LoadFile(const std::string& groupName) {
+	// 読み込むJsonファイルのフルパスを合成する
+	std::string filePath = kDirectorypath + groupName + ".json";
+	// 読み込み用ファイルストリーム
+	std::ifstream ifs;
+	// ファイル読み込み用に開く
+	ifs.open(filePath);
+
+	// ファイルオープンが失敗した場合ログを出して停止
+	if (ifs.fail()) {
+		// 読み込み失敗メッセージ
+		std::string message = "Failed open data file for write.";
+		// メッセージボックスを出す
+		MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+		// ゲーム停止
+		assert(0);
+		return;
+	}
+
+	// json型のインスタンスを生成
+	json root;
+	// json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	// 開いているファイルを閉じる
+	ifs.close();
+
+	// 引数で指定したグループがJsonオブジェクト内に登録されているか確認
+	json::iterator itGroup = root.find(groupName);
+	// 未登録だった場合ゲームを停止させる
+	assert(itGroup != root.end());
+
+	// 各アイテムについて
+	for (json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); itItem++) {
+		// アイテム名取得
+		const std::string& itemName = itItem.key();
+
+		// int32_t型の値を保持している場合
+		if (itItem->is_number_integer()) {
+			// int型の値を登録する
+			int32_t value = itItem->get<int32_t>();
+			// 値をセットする
+			SetValue(groupName, itemName, value);
+		}
+		// float型の値を保持している場合
+		else if (itItem->is_number_float()) {
+			// float型の値を登録する
+			float value = itItem->get<float>();
+			// 値をセットする
+			SetValue(groupName, itemName, value);
+		}
+		// Vector3型の値を保持している場合
+		else if (itItem->is_array() && itItem->size() == 3) {
+			// Vector3型の値を登録する
+			Vector3 value = {itItem->at(0), itItem->at(1), itItem->at(2)};
+			// 値をセットする
+			SetValue(groupName, itemName, value);
+		}
+	}
+}
+
 void GlobalVariables::SetValue(
     const std::string& groupName, const std::string& key, int32_t value) {
 	// グループの参照を取得する
@@ -187,4 +277,73 @@ void GlobalVariables::SetValue(
 	newItem.value = value;
 	// 設定を行った項目をデータコンテナに追加
 	group.items[key] = newItem;
+}
+
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, int32_t value) {
+	// 同名のキーを見つけたら処理を抜ける
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		// 関数呼び出し
+		SetValue(groupName, key, value);
+	}
+
+}
+
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, float value) {
+	// 同名のキーを見つけたら処理を抜ける
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		// 関数呼び出し
+		SetValue(groupName, key, value);
+	}
+}
+
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, Vector3 value) {
+	// 同名のキーを見つけたら処理を抜ける
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		// 関数呼び出し
+		SetValue(groupName, key, value);
+	}
+}
+
+int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::string& key){
+	
+	// 指定グループがいない場合エラー
+	assert(datas_.find(groupName) != datas_.end());
+
+	// グループの参照を取得する
+	Group& group = datas_[groupName];
+
+	// 指定グループに指定のキーが存在しない場合エラー
+	assert(group.items.find(key) != group.items.end());
+
+	// 指定グループから指定のキーの値を取得
+	return std::get<int32_t>(group.items[key].value);
+}
+
+float GlobalVariables::GetFloatValue(const std::string& groupName, const std::string& key){
+	// 指定グループがいない場合エラー
+	assert(datas_.find(groupName) != datas_.end());
+
+	// グループの参照を取得する
+	Group& group = datas_[groupName];
+
+	// 指定グループに指定のキーが存在しない場合エラー
+	assert(group.items.find(key) != group.items.end());
+
+	// 指定グループから指定のキーの値を取得
+	return std::get<float>(group.items[key].value);
+}
+
+Vector3
+    GlobalVariables::GetVector3Value(const std::string& groupName, const std::string& key){
+	// 指定グループがいない場合エラー
+	assert(datas_.find(groupName) != datas_.end());
+
+	// グループの参照を取得する
+	Group& group = datas_[groupName];
+
+	// 指定グループに指定のキーが存在しない場合エラー
+	assert(group.items.find(key) != group.items.end());
+
+	// 指定グループから指定のキーの値を取得
+	return std::get<Vector3>(group.items[key].value);
 }

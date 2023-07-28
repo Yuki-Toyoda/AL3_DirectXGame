@@ -57,6 +57,15 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="groupName">保存するグループ</param>
 	void SaveFile(const std::string& groupName);
+	/// <summary>
+	/// ディレクトリ内の全ファイルを読み込む
+	/// </summary>
+	void LoadFiles();
+	/// <summary>
+	/// ファイルを読み込む
+	/// </summary>
+	/// <param name="groupName">読み込むグループ</param>
+	void LoadFile(const std::string& groupName);
 
 	/// <summary>
 	/// 値のセット関数（int）
@@ -79,6 +88,50 @@ public: // メンバ関数
 	/// <param name="key">セットするキー</param>
 	/// <param name="value">セットする値</param>
 	void SetValue(const std::string& groupName, const std::string& key, const Vector3& value);
+
+	/// <summary>
+	/// 項目追加関数(int)
+	/// </summary>
+	/// <param name="groupName">追加する対象のグループ</param>
+	/// <param name="key">追加するキー</param>
+	/// <param name="value">追加する値</param>
+	void AddItem(const std::string& groupName, const std::string& key, int32_t value);
+	/// <summary>
+	/// 項目追加関数(float)
+	/// </summary>
+	/// <param name="groupName">追加する対象のグループ</param>
+	/// <param name="key">追加するキー</param>
+	/// <param name="value">追加する値</param>
+	void AddItem(const std::string& groupName, const std::string& key, float value);
+	/// <summary>
+	/// 項目追加関数(Vector3)
+	/// </summary>
+	/// <param name="groupName">追加する対象のグループ</param>
+	/// <param name="key">追加するキー</param>
+	/// <param name="value">追加する値</param>
+	void AddItem(const std::string& groupName, const std::string& key, Vector3 value);
+
+	/// <summary>
+	/// 値を取得する関数(int)
+	/// </summary>
+	/// <param name="groupName">取得するグループ名</param>
+	/// <param name="key">取得するキー</param>
+	/// <returns>値</returns>
+	int32_t GetIntValue(const std::string& groupName, const std::string& key);
+	/// <summary>
+	/// 値を取得する関数(float)
+	/// </summary>
+	/// <param name="groupName">取得するグループ名</param>
+	/// <param name="key">取得するキー</param>
+	/// <returns>値</returns>
+	float GetFloatValue(const std::string& groupName, const std::string& key);
+	/// <summary>
+	/// 値を取得する関数(Vector3)
+	/// </summary>
+	/// <param name="groupName">取得するグループ名</param>
+	/// <param name="key">取得するキー</param>
+	/// <returns>値</returns>
+	Vector3 GetVector3Value(const std::string& groupName, const std::string& key);
 
 private: // メンバ変数
 

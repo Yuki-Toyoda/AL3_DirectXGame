@@ -1,11 +1,31 @@
 {
     "Player": {
-        "TestFloat": -36.45800018310547,
-        "TestInt": 63,
-        "TestVector3": [
-            -44.0,
-            88.0,
-            100.0
-        ]
+        "HeadRotation": [
+            0.0,
+            28.0,
+            0.0
+        ],
+        "HeadTranslation": [
+            0.0,
+            1.5,
+            0.0
+        ],
+        "L_ArmTranslation": [
+            -0.3499999940395355,
+            1.25,
+            0.0
+        ],
+        "R_ArmTranslation": [
+            0.3499999940395355,
+            1.25,
+            0.0
+        ],
+        "Test": 0.0,
+        "attackForward": 10.0,
+        "attackTime": 14.833000183105469,
+        "attackWaitTime": 0.5,
+        "floatingAmpritude": 2.0929999351501465,
+        "floatingCycle": 60,
+        "swingOverTime": 0.5
     }
 }
